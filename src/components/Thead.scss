@@ -1,0 +1,92 @@
+.th {
+  border-top: 1px solid #eceeef;
+  border-bottom: 2px solid #eceeef;
+  display: inline-block;
+  line-height: 1.5;
+  font-weight: bold;
+  vertical-align: bottom;
+  text-align: left;
+  >div {
+    padding: 8px;
+    box-sizing: border-box;
+  }
+}
+.sortable {
+  cursor: pointer;
+  .sort-indicator {
+    position: relative;
+    padding-right: 18px;
+    display: inline-block;
+    box-sizing: border-box;
+    &:after,
+    &:before {
+      content: "";
+      border-width: 0 4px 4px;
+      border-style: solid;
+      border-color: #000 transparent;
+      visibility: visible;
+      right: 5px;
+      top: 50%;
+      position: absolute;
+      opacity: .5;
+      margin-top: -4px;
+    }
+    &:before {
+      margin-top: 2px;
+      border-bottom: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid #000;
+    }
+  }
+}
+.sort-indicator-desc:after,
+.sort-indicator-desc:after {
+  border-bottom: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #000;
+  visibility: visible;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  filter: alpha(opacity=60);
+  -khtml-opacity: .6;
+  -moz-opacity: .6;
+  opacity: .6;
+}
+.sort-indicator-desc:after,
+.sort-indicator-asc:before {
+  visibility: hidden !important;
+}
+.sort-indicator-desc:before,
+.sort-indicator-asc:after {
+  margin-top: -2px !important;
+}
+.reorder-column {
+  cursor: ew-resize !important;
+}
+
+.thead {
+  overflow: hidden;
+}
+.tr {
+  max-width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-flow: row;
+  -ms-flex-flow: row;
+  -o-flex-flow: row;
+  flex-flow: row;
+  -webkit-flex-flow: row;
+  -ms-flex-flow: row;
+  flex-flow: row;
+  box-orient: horizontal;
+}
