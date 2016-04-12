@@ -8,12 +8,24 @@
     transform: rotate(359deg);
   }
 }
-.container {
+.table {
   position: relative;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
   font-size: 14px;
+}
+.table-bordered {
+  border-left: 1px solid #eceeef;
+  border-right: 1px solid #eceeef;
+  border-bottom: 1px solid #eceeef;
+}
+.table-inverse {
+  color: #eceeef;
+  background-color: #373a3c;
+  &.table-bordered {
+    border: 0;
+  }
 }
 .loading-mask {
   position: absolute;

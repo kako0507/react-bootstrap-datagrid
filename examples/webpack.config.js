@@ -4,7 +4,8 @@ var webpack = require('webpack');
 module.exports = {
   entry: {
     simple: './simple/app.js',
-    fixedGridHeight: './fixedGridHeight/app.js'
+    fixedGridHeight: './fixedGridHeight/app.js',
+    setTableStyles: './setTableStyles/app.js'
   },
   output: {
     path: __dirname,

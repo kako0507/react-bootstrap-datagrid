@@ -85,7 +85,7 @@
 	  title: 'company',
 	  name: 'company'
 	}];
-	var items = _.range(20).map(function (i) {
+	var items = _.range(10).map(function (i) {
 	  return {
 	    id: i,
 	    firstName: _faker2.default.name.firstName(),
@@ -109,9 +109,12 @@
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(_reactBootstrapDatagrid2.default, {
+	        tableStyles: ['bordered',
+	        //'inverse',
+	        'striped', 'hover'],
+	        height: 300,
 	        columns: columns,
-	        items: items,
-	        height: 500
+	        items: items
 	      });
 	    }
 	  }]);

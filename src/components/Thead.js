@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import classNames from 'classnames';
 import {scrollbarWidth} from '../constants';
 import Th from './Th';
 import TableCheckBox from './TableCheckBox';
@@ -7,8 +8,17 @@ import styles from './Thead.scss';
 class Thead extends Component {
   static propTypes = {
     // layout
+    tableStyles: PropTypes.arrayOf(
+      PropTypes.oneOf([
+        'inverse',
+        'striped',
+        'bordered',
+        'hover'
+      ])
+    ),
     columnMinWidth: PropTypes.number,
     flexColumnWidth: PropTypes.number,
+    hasRightScrollbar: PropTypes.bool,
     rowWidth: PropTypes.number,
     minRowWidth: PropTypes.number,
     rowHeight: PropTypes.number,
@@ -43,10 +53,12 @@ class Thead extends Component {
   };
   render() {
     const {
+      tableStyles,
       rowWidth,
       minRowWidth,
       columnMinWidth,
       flexColumnWidth,
+      hasRightScrollbar,
       rowHeight,
       showScrollbarField,
       columns,
@@ -73,11 +85,10 @@ class Thead extends Component {
     return (
       <div className={styles['thead']}>
         <div
-          className={styles['tr']}
-          style={{
-            width: !isNaN(rowWidth) && rowWidth,
-            minWidth: !isNaN(minRowWidth) && minRowWidth
-          }}
+          className={classNames(
+            styles['tr'],
+            tableStyles.map(style => styles[`tr-${style}`])
+          )}
         >
           {onSelectionChange && selectedBy.indexOf('CHECKBOX') > -1 &&
             <TableCheckBox
@@ -113,7 +124,7 @@ class Thead extends Component {
               );
             return (
               <Th
-                width={columnConfig.width}
+                width={columnConfig.width || flexColumnWidth}
                 columnMinWidth={columnMinWidth}
                 rowHeight={rowHeight}
                 columnConfig={columnConfig}
@@ -134,8 +145,21 @@ class Thead extends Component {
             );
           })}
           {showScrollbarField &&
-            <div className={styles['th']}>
-              <div style={{width: scrollbarWidth - 1}}/>
+            <div
+              className={styles['th']}
+            >
+              <div
+                style={{
+                  width: (
+                    scrollbarWidth
+                  - (tableStyles.indexOf('bordered') > -1
+                      ? 1
+                      : 0
+                    )
+                  ),
+                  height: rowHeight
+                }}
+              />
             </div>
           }
         </div>

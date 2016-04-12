@@ -1,1 +1,1 @@
-export const scrollbarWidth = 17;
+export const scrollbarWidth = 20;

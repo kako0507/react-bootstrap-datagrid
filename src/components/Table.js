@@ -12,12 +12,21 @@ class Table extends Component {
   static propTypes = {
     // layout
     className: PropTypes.string,
+    tableStyles: PropTypes.arrayOf(
+      PropTypes.oneOf([
+        'inverse',
+        'striped',
+        'bordered',
+        'hover'
+      ])
+    ).isRequired,
     height: PropTypes.number,
     headerHeight: PropTypes.number,
     maxRowWidth: PropTypes.number,
     minRowWidth: PropTypes.number,
     columnMinWidth: PropTypes.number,
     flexColumnWidth: PropTypes.number,
+    hasRightScrollbar: PropTypes.bool,
     rowHeight: PropTypes.number,
     itemPadding: PropTypes.number,
     updateRowWidth: PropTypes.func,
@@ -75,9 +84,9 @@ class Table extends Component {
     const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
     tableHeader.scrollLeft = ev.target.scrollLeft;
   }
-  _updateRowWidth(maxRowWidth) {
+  _updateRowWidth(maxRowWidth, hasRightScrollbar) {
     const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
-    this.props.updateRowWidth(maxRowWidth);
+    this.props.updateRowWidth(maxRowWidth, hasRightScrollbar);
     const tbody = ReactDOM.findDOMNode(this.refs.tableBody);
     if(tbody) {
       tbody.scrollLeft = tableHeader.scrollLeft;
@@ -85,9 +94,11 @@ class Table extends Component {
   }
   render() {
     const {
+      tableStyles,
       className,
       columnMinWidth,
       flexColumnWidth,
+      hasRightScrollbar,
       maxRowWidth,
       minRowWidth,
       updateRowWidth,
@@ -120,18 +131,20 @@ class Table extends Component {
     return (
       <div
         className={classNames(
-          styles['container'],
+          styles['table'],
+          tableStyles.map(style => styles[`table-${style}`]),
           className
         )}
       >
         <Thead
           ref="tableHeader"
+          tableStyles={tableStyles}
           columnMinWidth={columnMinWidth}
           flexColumnWidth={flexColumnWidth}
-          rowWidth={maxRowWidth + scrollbarWidth}
+          rowWidth={maxRowWidth}
           minRowWidth={minRowWidth}
           rowHeight={headerHeight || rowHeight}
-          showScrollbarField={height > 0}
+          showScrollbarField={hasRightScrollbar}
           columns={columns}
           items={items}
           sortStatus={sortStatus}
@@ -149,8 +162,10 @@ class Table extends Component {
         />
         <Tbody
           ref="tableBody"
+          tableStyles={tableStyles}
           height={height}
           columnMinWidth={columnMinWidth}
+          flexColumnWidth={flexColumnWidth}
           maxRowWidth={maxRowWidth}
           minRowWidth={minRowWidth}
           updateRowWidth={this._updateRowWidth}
@@ -182,6 +197,7 @@ class Table extends Component {
 class TableContainer extends Component {
   state = {};
   static defaultProps = {
+    tableStyles: [],
     columnMinWidth: 100,
     rowHeight: 37,
     itemPadding: 3,
@@ -199,7 +215,7 @@ class TableContainer extends Component {
   componentWillReceiveProps() {
     this._updateMinRowWidth();
   }
-  _updateRowWidth(maxRowWidth) {
+  _updateRowWidth(maxRowWidth, hasRightScrollbar) {
     const dom = ReactDOM.findDOMNode(this);
     const {
       height,
@@ -213,13 +229,19 @@ class TableContainer extends Component {
       maxRowWidth = minRowWidth;
     }
     else {
-      maxRowWidth = dom.offsetWidth - 2;
+      maxRowWidth = dom.offsetWidth;
     }
-    if((maxRowWidth && this.state.maxRowWidth !== maxRowWidth)) {
+    if(
+      (maxRowWidth && this.state.maxRowWidth !== maxRowWidth)
+   || hasRightScrollbar !== this.state.hasRightScrollbar
+    ) {
       let flexColumnWidth = maxRowWidth;
       // sub width of scrollbar
+      if(height > 0 && hasRightScrollbar) {
+        flexColumnWidth -= 17;
+      }
       if(onSelectionChange && selectedBy.indexOf('CHECKBOX') > -1) {
-        flexColumnWidth = flexColumnWidth - 40;
+        flexColumnWidth -= 40;
       }
       let numberOfAutoWidthField = columns.length;
       columns.forEach(column => {
@@ -236,7 +258,8 @@ class TableContainer extends Component {
       }
       this.setState({
         maxRowWidth,
-        flexColumnWidth
+        flexColumnWidth,
+        hasRightScrollbar
       });
     }
   }

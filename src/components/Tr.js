@@ -4,13 +4,21 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import Td from './Td';
 import TableCheckBox from './TableCheckBox';
-import styles from './Tr.scss';
+import styles from './Tbody.scss';
 
 class Tr extends Component {
   static propTypes = {
     // layout
+    tableStyles: PropTypes.arrayOf(
+      PropTypes.oneOf([
+        'inverse',
+        'striped',
+        'bordered',
+        'hover'
+      ])
+    ),
     columnMinWidth: PropTypes.number,
-    maxRowWidth: PropTypes.number,
+    flexColumnWidth: PropTypes.number,
     minRowWidth: PropTypes.number,
     rowHeight: PropTypes.number,
     hasBorderBottom: PropTypes.bool,
@@ -83,9 +91,10 @@ class Tr extends Component {
   }
   render() {
     const {
+      tableStyles,
       height,
       columnMinWidth,
-      maxRowWidth,
+      flexColumnWidth,
       minRowWidth,
       rowHeight,
       hasBorderBottom,
@@ -103,13 +112,13 @@ class Tr extends Component {
       <div
         className={classNames(
           styles['tr'],
+          tableStyles.map(style => styles[`tr-${style}`]),
           {
             [styles['row-hover']]: rowItem && isSelectByClickRow,
             [styles['row-seleced']]: isSelectByClickRow && this._rowIsSelected()
           }
         )}
         style={{
-          maxWidth: !isNaN(maxRowWidth) && maxRowWidth,
           minWidth: !isNaN(minRowWidth) && minRowWidth,
           borderBottom: hasBorderBottom
             ? '1px solid #dadada'
@@ -131,7 +140,7 @@ class Tr extends Component {
         }
         {columns.map(columnConfig => (
           <Td
-            width={columnConfig.width}
+            width={columnConfig.width || flexColumnWidth}
             columnMinWidth={columnMinWidth}
             rowHeight={rowHeight}
             columnConfig={columnConfig}

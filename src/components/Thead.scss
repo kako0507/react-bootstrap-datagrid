@@ -69,24 +69,15 @@
 
 .thead {
   overflow: hidden;
+  white-space: nowrap;
 }
-.tr {
-  max-width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-flex-flow: row;
-  -ms-flex-flow: row;
-  -o-flex-flow: row;
-  flex-flow: row;
-  -webkit-flex-flow: row;
-  -ms-flex-flow: row;
-  flex-flow: row;
-  box-orient: horizontal;
+.tr-bordered>.th {
+  border-left: 1px solid #eceeef;
+  border-bottom-width: 2px;
+  &:first-child {
+    border-left: none;
+  }
+}
+.tr-inverse>.th {
+  border-color: #55595c;
 }

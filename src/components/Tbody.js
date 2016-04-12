@@ -1,12 +1,23 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 import Tr from './Tr';
+import styles from './Tbody.scss';
 import 'javascript-detect-element-resize';
 
 class Tbody extends Component {
   static propTypes = {
     // layout
+    tableStyles: PropTypes.arrayOf(
+      PropTypes.oneOf([
+        'inverse',
+        'striped',
+        'bordered',
+        'hover'
+      ])
+    ),
     columnMinWidth: PropTypes.number,
+    flexColumnWidth: PropTypes.number,
     maxRowWidth: PropTypes.number,
     minRowWidth: PropTypes.number,
     updateRowWidth: PropTypes.func,
@@ -56,13 +67,14 @@ class Tbody extends Component {
       updateRowWidth,
     } = this.props;
     const tableBodyContent = ReactDOM.findDOMNode(this.refs.tableBodyContent);
+    const tableBodyItems = ReactDOM.findDOMNode(this.refs.tableBodyItems);
     const {
       missingNumTop,
       missingNumBottom
     } = this._getItemsToRender();
     updateRowWidth(
       tableBodyContent.offsetWidth,
-      tableBodyContent
+      tableBodyItems.offsetHeight > height
     );
   }
   _getItemsToRender() {
@@ -97,6 +109,7 @@ class Tbody extends Component {
   }
   render() {
     const {
+      tableStyles,
       height,
       maxRowWidth,
       minRowWidth,
@@ -118,10 +131,12 @@ class Tbody extends Component {
     } = this._getItemsToRender();
     return (
       <div
+        className={classNames(
+          styles['tbody'],
+          tableStyles.map(style => styles[`tbody-${style}`]),
+        )}
         style={{
-          height,
-          position: 'relative',
-          overflow: 'auto'
+          height
         }}
         key="tbody"
       >
@@ -144,46 +159,39 @@ class Tbody extends Component {
               {emptyText}
             </div>
           }
-          <div
-            style={{
-              maxWidth: !isNaN(maxRowWidth) && maxRowWidth,
-              minWidth: !isNaN(minRowWidth) && minRowWidth
-            }}
-          >
-            {rowHeight > 0 && height > 0 &&
-              <div
-                style={{
-                  height: rowsTop * rowHeight || undefined
-                }}
-                key="top"
+          {height > 0 && rowHeight > 0 && rowsTop > 0 &&
+            <div
+              style={{
+                height: rowsTop * rowHeight || undefined
+              }}
+              key="top"
+            />
+          }
+          <div ref="tableBodyItems">
+            {arrItemsToRender.map((rowItem, index) => (
+              <Tr
+                {...this.props}
+                rowItem={rowItem}
+                hasBorderBottom={
+                  (
+                    missingNumBottom
+                 || rowsBottom
+                 || items.length < (height / rowHeight)
+                  )
+               && index === arrItemsToRender.length - 1
+                }
+                key={rowItem[idProperty]}
               />
-            }
-            <div>
-              {arrItemsToRender.map((rowItem, index) => (
-                <Tr
-                  {...this.props}
-                  rowItem={rowItem}
-                  hasBorderBottom={
-                    (
-                      missingNumBottom
-                   || rowsBottom
-                   || items.length < (height / rowHeight)
-                    )
-                 && index === arrItemsToRender.length - 1
-                  }
-                  key={rowItem[idProperty]}
-                />
-              ))}
-            </div>
-            {rowHeight > 0 && height > 0 &&
-              <div
-                style={{
-                  height: rowsBottom * rowHeight || undefined
-                }}
-                key="bottom"
-              />
-            }
+            ))}
           </div>
+          {height > 0 && rowHeight > 0 && rowsBottom > 0 &&
+            <div
+              style={{
+                height: rowsBottom * rowHeight || undefined
+              }}
+              key="bottom"
+            />
+          }
         </div>
       </div>
     );

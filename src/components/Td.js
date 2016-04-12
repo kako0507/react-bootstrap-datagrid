@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import {stopEventPropagation} from '../utils';
-import styles from './Td.scss';
+import styles from './Tbody.scss';
 
 function getDescendantByDotNotation(obj, is, value) {
   try {
