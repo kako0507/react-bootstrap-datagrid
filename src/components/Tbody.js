@@ -22,6 +22,7 @@ class Tbody extends Component {
     minRowWidth: PropTypes.number,
     updateRowWidth: PropTypes.func,
     rowHeight: PropTypes.number,
+    hasRightScrollbar: PropTypes.bool,
     setHeaderScroll: PropTypes.func,
     // main data
     columns: PropTypes.array.isRequired,
@@ -114,6 +115,7 @@ class Tbody extends Component {
       maxRowWidth,
       minRowWidth,
       rowHeight,
+      hasRightScrollbar,
       items,
       selectedItems,
       selectedBy,
@@ -134,6 +136,9 @@ class Tbody extends Component {
         className={classNames(
           styles['tbody'],
           tableStyles.map(style => styles[`tbody-${style}`]),
+          {
+            [styles['tbody-scrollbar']]: hasRightScrollbar
+          }
         )}
         style={{
           height

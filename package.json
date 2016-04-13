@@ -1,6 +1,6 @@
 {
   "name": "react-bootstrap-datagrid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Bootstrap Style Data Grid Base On React",
   "main": "./dist/index.js",
   "authors": [

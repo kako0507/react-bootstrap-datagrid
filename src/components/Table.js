@@ -170,6 +170,7 @@ class Table extends Component {
           minRowWidth={minRowWidth}
           updateRowWidth={this._updateRowWidth}
           rowHeight={rowHeight}
+          hasRightScrollbar={hasRightScrollbar}
           itemPadding={itemPadding}
           setHeaderScroll={this._setHeaderScroll}
           columns={columns}
@@ -225,6 +226,7 @@ class TableContainer extends Component {
       selectedBy
     } = this.props;
     const {minRowWidth} = this.state;
+    console.log('maxRowWidth:', maxRowWidth, 'dom.offsetWidth:', dom.offsetWidth);
     if(maxRowWidth > dom.offsetWidth) {
       maxRowWidth = minRowWidth;
     }

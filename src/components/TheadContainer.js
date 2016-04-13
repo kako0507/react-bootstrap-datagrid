@@ -179,7 +179,7 @@ class TheadContainer extends Component {
         }
         else {
           if(dragStartIndex !== dragEndIndex) {
-            this.props.onColumnOrderChange(dragStartIndex, dragEndIndex, tempColumns);
+            this.props.onColumnOrderChange(tempColumns.toJS());
           }
           else if(!isDragging && typeof mouseDownColumnConfig.title === 'string') {
             this._handleSortChange(mouseDownColumnConfig.name);
@@ -218,6 +218,7 @@ class TheadContainer extends Component {
         onSortChange={onSortChange && this._handleSortChange}
         tempColumns={data.get('tempColumns')}
         dragStartIndex={data.get('dragStartIndex')}
+        isDragging={data.get('isDragging')}
         onDragStart={this._handleDragStart}
         onDrag={this._handleDrag}
         onDragEnd={this._handleDragEnd}

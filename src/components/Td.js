@@ -135,7 +135,6 @@ class Td extends Component {
         className={styles['td']}
         style={{
           minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1,
-          flex: width === undefined ? 1 : undefined,
           cursor
         }}
       >

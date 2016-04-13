@@ -50,7 +50,7 @@ module.exports = {
         test: /\.scss$/,
         loaders: [
           'style',
-          'css?modules&importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]',
+          'css?modules&importLoaders=2&sourceMap&localIdentName=react-bootstrap-datagrid-[local]',
           'autoprefixer?browsers=last 2 version',
           'sass?outputStyle=expanded&sourceMap'
         ]

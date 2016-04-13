@@ -28,17 +28,24 @@
   background-color: #BEDFFF !important;
 }
 .tr-bordered>.td {
+  margin-left: -1px;
   border-left: 1px solid #eceeef;
-  border-bottom-width: 2px;
   &:first-child {
+    margin-left: 0;
     border-left: none;
   }
 }
 .tr-striped:nth-of-type(odd) {
   background-color: #f9f9f9;
+  &.tr-inverse {
+    color: #373a3c;
+  }
 }
 .tr-hover:hover {
   background-color: #f5f5f5;
+  &.tr-inverse {
+    color: #373a3c;
+  }
 }
 .tr-inverse {
   border-color: #55595c;
@@ -50,8 +57,12 @@
 .tbody {
   position: relative;
   width: 100%;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
-.tbody-bordered {
+.tbody-bordered:not(.tbody-inverse) {
   width: calc(100% + 2px);
+}
+.tbody-scrollbar {
+  overflow-y: auto;
 }

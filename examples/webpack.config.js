@@ -5,7 +5,8 @@ module.exports = {
   entry: {
     simple: './simple/app.js',
     fixedGridHeight: './fixedGridHeight/app.js',
-    setTableStyles: './setTableStyles/app.js'
+    setTableStyles: './setTableStyles/app.js',
+    reorderColumns: './reorderColumns/app.js'
   },
   output: {
     path: __dirname,

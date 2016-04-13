@@ -120,6 +120,9 @@ class Tr extends Component {
         )}
         style={{
           minWidth: !isNaN(minRowWidth) && minRowWidth,
+          height: rowHeight > 0
+            ? rowHeight - 1
+            : undefined,
           borderBottom: hasBorderBottom
             ? '1px solid #dadada'
             : undefined

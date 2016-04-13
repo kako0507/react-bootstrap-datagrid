@@ -64,18 +64,26 @@
   margin-top: -2px !important;
 }
 .reorder-column {
-  cursor: ew-resize !important;
+  cursor: move !important;
+  &.dragging {
+    color: #373a3c;
+    background-color: #f5f5f5;
+  }
 }
 
 .thead {
   overflow: hidden;
   white-space: nowrap;
 }
-.tr-bordered>.th {
-  border-left: 1px solid #eceeef;
-  border-bottom-width: 2px;
-  &:first-child {
-    border-left: none;
+.tr-bordered {
+  >.th {
+    margin-left: -1px;
+    border-bottom-width: 2px;
+    border-left: 1px solid #eceeef;
+    &:first-child {
+      margin-left: 0;
+      border-left: none;
+    }
   }
 }
 .tr-inverse>.th {

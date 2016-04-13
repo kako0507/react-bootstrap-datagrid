@@ -46,7 +46,7 @@ class Th extends Component {
   }
   _handleMouseMove(ev) {
     stopEventPropagation(ev);
-    document.body.style.cursor = 'ew-resize';
+    document.body.style.cursor = 'move';
     this.props.onDrag(ev);
   }
   _handleMouseDown(ev) {
@@ -82,15 +82,17 @@ class Th extends Component {
       onColumnOrderChange,
       isDragging
     } = this.props;
-    const opacity = isDragging ? 0.5 : 1;
     if(typeof columnConfig.title !== 'string') {
       return (
         <div
-          className={styles['th']}
+          className={classNames(
+            styles['th'],
+            {
+              [styles['dragging']]: isDragging
+            }
+          )}
           style={{
-            minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1,
-            flex: width === undefined ? 1 : undefined,
-            opacity
+            minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1
           }}
         >
           <div
@@ -111,13 +113,12 @@ class Th extends Component {
           styles['th'],
           {
             [styles['reorder-column']]: !!onColumnOrderChange,
+            [styles['dragging']]: isDragging,
             [styles['sortable']]: sortable || sort
           }
         )}
         style={{
-          minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1,
-          flex: width === undefined ? 1 : undefined,
-          opacity
+          minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1
         }}
       >
         <div
