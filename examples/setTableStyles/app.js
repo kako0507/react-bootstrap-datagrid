@@ -71,7 +71,7 @@ class Simple extends Component {
             <label className="c-input c-checkbox">
               <input
                 type="checkbox"
-                value={tableStyles.indexOf('bordered') > -1}
+                checked={tableStyles.indexOf('bordered') > -1}
                 onChange={this._setTableStylesBordered}
               />
               <span className="c-indicator"/>
@@ -82,7 +82,7 @@ class Simple extends Component {
             <label className="c-input c-checkbox">
               <input
                 type="checkbox"
-                value={tableStyles.indexOf('inverse') > -1}
+                checked={tableStyles.indexOf('inverse') > -1}
                 onChange={this._setTableStylesInverse}
               />
               <span className="c-indicator"/>
@@ -93,7 +93,7 @@ class Simple extends Component {
             <label className="c-input c-checkbox">
               <input
                 type="checkbox"
-                value={tableStyles.indexOf('striped') > -1}
+                checked={tableStyles.indexOf('striped') > -1}
                 onChange={this._setTableStylesStriped}
               />
               <span className="c-indicator"/>
@@ -104,7 +104,7 @@ class Simple extends Component {
             <label className="c-input c-checkbox">
               <input
                 type="checkbox"
-                value={tableStyles.indexOf('hover') > -1}
+                checked={tableStyles.indexOf('hover') > -1}
                 onChange={this._setTableStylesHover}
               />
               <span className="c-indicator"/>

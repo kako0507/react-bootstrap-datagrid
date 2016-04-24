@@ -50,7 +50,7 @@ module.exports = {
         test: /\.scss$/,
         loaders: [
           'style',
-          'css?modules&importLoaders=2&sourceMap&localIdentName=react-bootstrap-datagrid-[local]',
+          'css?modules&importLoaders=2&sourceMap&localIdentName=react-bs-dg-[local]',
           'autoprefixer?browsers=last 2 version',
           'sass?outputStyle=expanded&sourceMap'
         ]
@@ -62,6 +62,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin()
+    //new webpack.optimize.UglifyJsPlugin()
   ]
 };

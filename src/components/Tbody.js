@@ -29,10 +29,7 @@ class Tbody extends Component {
     items: PropTypes.array.isRequired,
     itemsIndexRange: PropTypes.arrayOf(PropTypes.number),
     // select items by checkbox
-    selectedItems: PropTypes.oneOfType([
-      React.PropTypes.object,
-      React.PropTypes.array
-    ]),
+    selectedItems: PropTypes.array,
     selectedBy: PropTypes.arrayOf(PropTypes.string),
     onSelectionChange: PropTypes.func,
     disableSelection: PropTypes.func,

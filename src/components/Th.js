@@ -25,10 +25,7 @@ class Th extends Component {
     onDrag: PropTypes.func,
     onDragEnd: PropTypes.func,
     // select items by checkbox
-    selectedItems: PropTypes.oneOfType([
-      React.PropTypes.object,
-      React.PropTypes.array
-    ]),
+    selectedItems: PropTypes.array,
   };
   constructor(props) {
     super(props);
@@ -92,23 +89,20 @@ class Th extends Component {
             }
           )}
           style={{
-            minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1
+            width: !width || (columnMinWidth > width) ? columnMinWidth : width,
+            height: rowHeight
           }}
         >
-          <div
-            style={{
-              width: width === undefined ? undefined : width - 1,
-              height: rowHeight,
-              padding: 0
-            }}
-          >
-            {columnConfig.title}
-          </div>
+          {columnConfig.title}
         </div>
       );
     }
     return (
       <div
+        title={rowHeight > 0
+          ? columnConfig.title
+          : undefined
+        }
         className={classNames(
           styles['th'],
           {
@@ -118,36 +112,26 @@ class Th extends Component {
           }
         )}
         style={{
-          minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1
+          width: !width || (columnMinWidth > width) ? columnMinWidth : width,
+          height: rowHeight
         }}
       >
         <div
-          title={rowHeight > 0
-            ? columnConfig.title
-            : undefined
-          }
+          className={classNames(
+            styles['sort-indicator'],
+            {
+              'fixed-row-height': rowHeight > 0,
+              [styles['sort-indicator-asc']]: sort && sort.dir === 'asc',
+              [styles['sort-indicator-desc']]: sort && sort.dir === 'desc'
+            }
+          )}
           style={{
-            width: width === undefined ? undefined : width - 1,
-            height: rowHeight
+            maxWidth: '100%'
           }}
         >
-          <div
-            className={classNames(
-              styles['sort-indicator'],
-              {
-                'fixed-row-height': rowHeight > 0,
-                [styles['sort-indicator-asc']]: sort && sort.dir === 'asc',
-                [styles['sort-indicator-desc']]: sort && sort.dir === 'desc'
-              }
-            )}
-            style={{
-              maxWidth: '100%'
-            }}
-          >
-            <span className="th-text">
-              {columnConfig.title}
-            </span>
-          </div>
+          <span className="th-text">
+            {columnConfig.title}
+          </span>
         </div>
       </div>
     );

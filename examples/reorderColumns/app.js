@@ -49,12 +49,6 @@ class Simple extends Component {
   render() {
     return (
       <Table
-        tableStyles={[
-          'bordered',
-          'inverse',
-          'striped',
-          'hover',
-        ]}
         columns={this.state.columns}
         items={items}
         onColumnOrderChange={this._handleColumnOrderChange}

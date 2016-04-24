@@ -1,6 +1,4 @@
 .th {
-  border-top: 1px solid #eceeef;
-  border-bottom: 2px solid #eceeef;
   display: inline-block;
   line-height: 1.5;
   font-weight: bold;
@@ -72,13 +70,14 @@
 }
 
 .thead {
+  border-top: 1px solid #eceeef;
+  border-bottom: 2px solid #eceeef;
   overflow: hidden;
   white-space: nowrap;
 }
 .tr-bordered {
   >.th {
     margin-left: -1px;
-    border-bottom-width: 2px;
     border-left: 1px solid #eceeef;
     &:first-child {
       margin-left: 0;
@@ -86,6 +85,9 @@
     }
   }
 }
-.tr-inverse>.th {
+.thead-inverse {
   border-color: #55595c;
+  .th {
+    border-color: #55595c;
+  }
 }

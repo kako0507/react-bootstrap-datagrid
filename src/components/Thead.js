@@ -32,7 +32,7 @@ class Thead extends Component {
       PropTypes.object
     ]),
     sortFields: PropTypes.arrayOf(PropTypes.string),
-    sortDirections: PropTypes.arrayOf(PropTypes.object),
+    sortDirections: PropTypes.object,
     multiSort: PropTypes.bool,
     // column reordering
     isDragging: PropTypes.bool,
@@ -42,10 +42,7 @@ class Thead extends Component {
     onDrag: PropTypes.func,
     onDragEnd: PropTypes.func,
     // select items by checkbox
-    selectedItems: PropTypes.oneOfType([
-      React.PropTypes.object,
-      React.PropTypes.array
-    ]),
+    selectedItems: PropTypes.array,
     selectedBy: PropTypes.arrayOf(PropTypes.string),
     onSelectionChange: PropTypes.func,
     disableSelection: PropTypes.func,
@@ -83,15 +80,21 @@ class Thead extends Component {
       immutableData
     } =  this.props;
     return (
-      <div className={styles['thead']}>
+      <div
+        className={classNames(
+          styles['thead'],
+          tableStyles.map(style => styles[`thead-${style}`])
+        )}
+      >
         <div
           className={classNames(
             styles['tr'],
             tableStyles.map(style => styles[`tr-${style}`])
           )}
         >
-          {onSelectionChange && selectedBy.indexOf('CHECKBOX') > -1 &&
+          {onSelectionChange && selectedBy.indexOf('checkbox') > -1 &&
             <TableCheckBox
+              rowHeight={rowHeight}
               items={items}
               selectedItems={selectedItems}
               isSelectAll={true}
@@ -157,7 +160,8 @@ class Thead extends Component {
                       : 0
                     )
                   ),
-                  height: rowHeight
+                  height: rowHeight,
+                  padding: 0
                 }}
               />
             </div>

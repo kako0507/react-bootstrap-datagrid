@@ -27,10 +27,7 @@ class Tr extends Component {
     items: PropTypes.array.isRequired,
     rowItem: PropTypes.object,
     // select items by checkbox
-    selectedItems: PropTypes.oneOfType([
-      React.PropTypes.object,
-      React.PropTypes.array
-    ]),
+    selectedItems: PropTypes.array,
     selectedBy: PropTypes.arrayOf(PropTypes.string),
     onSelectionChange: PropTypes.func,
     disableSelection: PropTypes.func,
@@ -43,22 +40,18 @@ class Tr extends Component {
   componentDidMount() {
     const dom = ReactDOM.findDOMNode(this);
   }
-  _getSelectedIds() {
-    const {idProperty} = this.props;
-    let {selectedItems} = this.props;
-    const selectedItemsIsObj = !Array.isArray(selectedItems);
-    if(selectedItemsIsObj) {
-      selectedItems = _.map(selectedItems, idProperty);
-    }
-    return {selectedItems, selectedItemsIsObj};
-  }
   _rowIsSelected() {
-    const {rowItem, idProperty} = this.props;
-    if(!rowItem) {
+    const {
+      rowItem,
+      selectedItems,
+      idProperty
+    } = this.props;
+    if(!rowItem || !selectedItems || !selectedItems.length) {
       return false;
     }
-    const {selectedItems} = this._getSelectedIds();
-    return selectedItems.indexOf(rowItem[idProperty]) > -1;
+    return selectedItems
+      .map(selectedItem => selectedItem[idProperty])
+      .indexOf(rowItem[idProperty]) > -1;
   }
   _handleToggleSelect(ev) {
     const {
@@ -69,25 +62,23 @@ class Tr extends Component {
       rowItem,
       idProperty
     } = this.props;
-    if(!rowItem || (disableSelection && disableSelection(rowItem))) {
+    const isSelectByClickRow = onSelectionChange && selectedBy.indexOf('row') > -1;
+    if(!rowItem || (!ev && isSelectByClickRow) || (disableSelection && disableSelection(rowItem))) {
       return;
     }
-    let {selectedItems, selectedItemsIsObj} = this._getSelectedIds();
-    const arrToggleIds = [rowItem[idProperty]];
-    if(selectedItems.indexOf(rowItem[idProperty]) > -1) {
-      selectedItems = _.difference(selectedItems, arrToggleIds);
+    let selectedItems = [...(this.props.selectedItems || [])];
+    const index = selectedItems
+      ? selectedItems
+          .map(selectedItem => selectedItem[idProperty])
+          .indexOf(rowItem[idProperty])
+      : -1;
+    if(index > -1) {
+      selectedItems.splice(index, 1);
     }
     else {
-      selectedItems = _.union(selectedItems, arrToggleIds);
+      selectedItems.push(rowItem);
     }
-    if(selectedItemsIsObj) {
-      const objItems = _.mapKeys(items, value => value[idProperty]);
-      selectedItems = _(selectedItems)
-        .mapKeys(value => value)
-        .mapValues((value, key) => objItems[key])
-        .value();
-    }
-    this.props.onSelectionChange(selectedItems, ev.which);
+    onSelectionChange(selectedItems, ev);
   }
   render() {
     const {
@@ -107,15 +98,14 @@ class Tr extends Component {
       selectedBy,
       idProperty
     } = this.props;
-    const isSelectByClickRow = onSelectionChange && selectedBy.indexOf('ROW') > -1;
+    const isSelectByClickRow = onSelectionChange && selectedBy.indexOf('row') > -1;
     return (
       <div
         className={classNames(
           styles['tr'],
           tableStyles.map(style => styles[`tr-${style}`]),
           {
-            [styles['row-hover']]: rowItem && isSelectByClickRow,
-            [styles['row-seleced']]: isSelectByClickRow && this._rowIsSelected()
+            [styles['tr-selected']]: isSelectByClickRow && this._rowIsSelected()
           }
         )}
         style={{
@@ -129,7 +119,7 @@ class Tr extends Component {
         }}
         onMouseDown={isSelectByClickRow && this._handleToggleSelect}
       >
-        {onSelectionChange && selectedBy.indexOf('CHECKBOX') > -1 &&
+        {onSelectionChange && selectedBy.indexOf('checkbox') > -1 &&
           <TableCheckBox
             rowHeight={rowHeight}
             items={items}

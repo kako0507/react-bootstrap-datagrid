@@ -39,15 +39,15 @@ class Table extends Component {
       PropTypes.object
     ]),
     sortFields: PropTypes.arrayOf(PropTypes.string),
-    sortDirections: PropTypes.arrayOf(PropTypes.object),
+    sortDirections: PropTypes.object,
     multiSort: PropTypes.bool,
     onSortChange: PropTypes.func,
     // column reordering
     onColumnOrderChange: PropTypes.func,
     // select items by checkbox
-    selectedItems: React.PropTypes.array,
+    selectedItems: PropTypes.array,
     selectedBy: PropTypes.arrayOf(
-      PropTypes.oneOf(['CHECKBOX', 'ROW'])
+      PropTypes.oneOf(['checkbox', 'row'])
     ),
     onSelectionChange: PropTypes.func,
     disableSelection: PropTypes.func,
@@ -202,7 +202,7 @@ class TableContainer extends Component {
     columnMinWidth: 100,
     rowHeight: 37,
     itemPadding: 3,
-    selectedBy: ['CHECKBOX'],
+    selectedBy: ['checkbox'],
     idProperty: 'id'
   };
   constructor(props) {
@@ -226,7 +226,6 @@ class TableContainer extends Component {
       selectedBy
     } = this.props;
     const {minRowWidth} = this.state;
-    console.log('maxRowWidth:', maxRowWidth, 'dom.offsetWidth:', dom.offsetWidth);
     if(maxRowWidth > dom.offsetWidth) {
       maxRowWidth = minRowWidth;
     }
@@ -242,7 +241,7 @@ class TableContainer extends Component {
       if(height > 0 && hasRightScrollbar) {
         flexColumnWidth -= 17;
       }
-      if(onSelectionChange && selectedBy.indexOf('CHECKBOX') > -1) {
+      if(onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
         flexColumnWidth -= 40;
       }
       let numberOfAutoWidthField = columns.length;
@@ -273,7 +272,7 @@ class TableContainer extends Component {
       columnMinWidth
     } = this.props;
     let minRowWidth = -2;
-    if(onSelectionChange && selectedBy.indexOf('CHECKBOX') > -1) {
+    if(onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
       minRowWidth += 40;
     }
     columns.forEach(column => {

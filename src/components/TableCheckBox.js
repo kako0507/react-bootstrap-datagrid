@@ -15,16 +15,7 @@ class TableCheckBox extends Component {
     rowHeight: PropTypes.number,
     items: PropTypes.array.isRequired,
     rowItem: PropTypes.object,
-    selectedItems: PropTypes.oneOfType([
-      PropTypes.object,
-      // array of ids
-      PropTypes.arrayOf(
-        PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string
-        ])
-      )
-    ]),
+    selectedItems: PropTypes.array,
     isSelectAll: PropTypes.bool,
     onSelectionChange: PropTypes.func.isRequired,
     disableSelection: PropTypes.func,
@@ -47,14 +38,10 @@ class TableCheckBox extends Component {
       idProperty
     } = this.props;
     if(isSelectAll) {
-      let {selectedItems} = this.props;
+      const selectedItems = this.props.selectedItems || [];
       let checkbox = ReactDOM.findDOMNode(this.refs.checkbox);
-      const selectedItemsIsObj = !Array.isArray(selectedItems);
-      if(selectedItemsIsObj) {
-        selectedItems = _.map(selectedItems, idProperty);
-      }
       const count = _.intersection(
-        selectedItems,
+        selectedItems.map(rowItem => rowItem[idProperty]),
         items.map(rowItem => rowItem[idProperty])
       ).length;
       checkbox.indeterminate = count && count !== items.length;
@@ -70,35 +57,21 @@ class TableCheckBox extends Component {
     } = this.props;
     stopEventPropagation(ev);
     if(onToggleSelect) {
-      onToggleSelect(ev);
+      onToggleSelect();
       return;
     }
     let {selectedItems} = this.props;
-    const selectedItemsIsObj = !Array.isArray(selectedItems);
     const checkbox = ReactDOM.findDOMNode(this.refs.checkbox);
-    if(selectedItemsIsObj) {
-      selectedItems = _.map(selectedItems, idProperty);
-    }
     if(checkbox.checked || checkbox.indeterminate) {
       selectedItems = [];
     }
     else {
-      selectedItems = items.map(rowItem => rowItem[idProperty]);
+      selectedItems = items;
     }
-    if(disableSelection || selectedItemsIsObj) {
-      const objItems = _.mapKeys(items, value => value[idProperty]);
-      if(disableSelection) {
-        selectedItems = selectedItems
-          .map(id => objItems[id])
-          .filter(rowItem => !disableSelection(rowItem))
-          .map(rowItem => rowItem[idProperty])
-      }
-      if(selectedItemsIsObj) {
-        selectedItems = _(selectedItems)
-          .mapKeys(value => value)
-          .mapValues((value, key) => objItems[key])
-          .value();
-      }
+    if(disableSelection) {
+      selectedItems = selectedItems.filter(
+        rowItem => !disableSelection(rowItem)
+      );
     }
     this.props.onSelectionChange(selectedItems);
   }
@@ -115,13 +88,10 @@ class TableCheckBox extends Component {
     } = this.props;
     try {
       if(rowItem) {
-        if(Array.isArray(selectedItems)) {
-          // checked = selectedItems.find(id => id == rowItem[idProperty]) !== undefined;
-          checked = selectedItems.filter(id => id == rowItem[idProperty]).length;
-        }
-        else {
-          checked = selectedItems[rowItem[idProperty]]
-        }
+        // checked = selectedItems.find(id => id == rowItem[idProperty]) !== undefined;
+        checked = selectedItems.filter(
+          selectedItem => selectedItem[idProperty] == rowItem[idProperty]
+        ).length;
       }
     }
     catch(err) {

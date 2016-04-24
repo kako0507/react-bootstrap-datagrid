@@ -46,41 +46,47 @@ class TheadContainer extends Component {
       return;
     }
     let sortDirection;
-    if(Array.isArray(sortDirections)) {
-      sortDirection = sortDirections
-        //.find(sortDirection => sortDirection.name === name)
-        .filter(sortDirection => sortDirection.name === name)[0];
+    if(sortDirections) {
+      sortDirection = sortDirections[name];
     }
     if(!sortDirection) {
-      sortDirection = {
-        name,
-        dir: 'asc'
-      };
+      sortDirection = 'asc'
     }
     if(multiSort) {
       let sortItem = sortStatus && sortStatus
         //.find(sortItem => sortItem.name === name);
         .filter(sortItem => sortItem.name === name)[0];
       if(sortItem) {
-        const index = sortStatus.indexOf(sortItem);
-        sortStatus = List
-          .of(...sortStatus)
-          .update(
-            index,
-            () => ({
-              ...sortItem,
-              dir: sortItem.dir === 'asc'
-                ? 'desc'
-                : 'asc'
-            })
-          )
-          .toJS();
+        const sortStatusName = sortStatus.map(sort => sort.name);
+        const sortItemIndex = sortStatusName.indexOf(sortItem.name);
+        if(
+            sortDirection
+         && sortItem.dir
+         && sortItem.dir !== sortDirection
+        ) {
+          sortStatus = List
+            .of(...sortStatus)
+            .delete(sortItemIndex)
+            .toJS();
+        }
+        else {
+          sortStatus = List
+            .of(...sortStatus)
+            .update(
+              sortItemIndex,
+              () => ({
+                ...sortItem,
+                dir: sortItem.dir === 'asc' ? 'desc' : 'asc'
+              })
+            )
+            .toJS();
+        }
       }
       else {
         if(!sortStatus) {
           sortStatus = [];
         }
-        sortItem = {name, dir: sortDirection.dir};
+        sortItem = {name, dir: sortDirection};
         sortStatus = List
           .of(...sortStatus)
           .push(sortItem)
@@ -95,7 +101,10 @@ class TheadContainer extends Component {
         };
       }
       else {
-        sortStatus = sortDirection;
+        sortStatus = {
+          name,
+          dir: sortDirection
+        };
       }
     }
     this.props.onSortChange(sortStatus);

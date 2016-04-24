@@ -132,26 +132,22 @@ class Td extends Component {
     return (
       <div
         title={title}
-        className={styles['td']}
+        className={classNames(
+          styles['td'],
+          {
+            [styles['fixed-row-height']]: rowHeight > 0
+          }
+        )}
         style={{
-          minWidth: (!width || (columnMinWidth > width) ? columnMinWidth : width) - 1,
+          width: !width || (columnMinWidth > width) ? columnMinWidth : width,
+          height: rowHeight > 0
+            ? rowHeight - 1
+            : undefined,
+          padding: `${(rowHeight -21) / 2}px 8px`,
           cursor
         }}
       >
-        <div
-          className={classNames({
-            [styles['fixed-row-height']]: rowHeight > 0
-          })}
-          style={{
-            width: width === undefined ? undefined : width - 1,
-            height: rowHeight > 0
-              ? rowHeight - 1
-              : undefined,
-            padding: `${rowHeight / 2 - 10}px 8px`,
-          }}
-        >
-          {value}
-        </div>
+        {value}
       </div>
     );
   }

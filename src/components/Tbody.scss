@@ -1,5 +1,7 @@
 .td {
   display: inline-block;
+  vertical-align: bottom;
+  box-sizing: border-box;
   >div {
     padding: 8px;
     box-sizing: border-box;
@@ -17,15 +19,10 @@
 .tr {
   border-top: 1px solid #eceeef;
   white-space: nowrap;
+  box-sizing: border-box;
   &:first-child {
     border-top: none !important;
   }
-}
-.row-hover:hover {
-  background-color: #E5F1FF;
-}
-.row-seleced {
-  background-color: #BEDFFF !important;
 }
 .tr-bordered>.td {
   margin-left: -1px;
@@ -52,6 +49,9 @@
   >.td {
     border-color: #55595c;
   }
+}
+.tr-selected {
+  background-color: #d9edf7;
 }
 
 .tbody {
