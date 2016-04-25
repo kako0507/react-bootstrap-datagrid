@@ -64,14 +64,8 @@ class Tbody extends Component {
       height,
       updateRowWidth,
     } = this.props;
-    const tableBodyContent = ReactDOM.findDOMNode(this.refs.tableBodyContent);
     const tableBodyItems = ReactDOM.findDOMNode(this.refs.tableBodyItems);
-    const {
-      missingNumTop,
-      missingNumBottom
-    } = this._getItemsToRender();
     updateRowWidth(
-      tableBodyContent.offsetWidth,
       tableBodyItems.offsetHeight > height
     );
   }
@@ -143,7 +137,6 @@ class Tbody extends Component {
         key="tbody"
       >
         <div
-          ref="tableBodyContent"
           style={{
             height
           }}

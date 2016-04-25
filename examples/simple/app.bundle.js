@@ -20241,10 +20241,10 @@
 		    }
 		  }, {
 		    key: '_updateRowWidth',
-		    value: function _updateRowWidth(maxRowWidth, hasRightScrollbar) {
+		    value: function _updateRowWidth(hasRightScrollbar) {
 		      var tableHeader = _reactDom2.default.findDOMNode(this.refs.tableHeader);
 		      var currentTableWidth = _reactDom2.default.findDOMNode(this).offsetWidth;
-		      this.props.updateRowWidth(currentTableWidth, maxRowWidth, hasRightScrollbar);
+		      this.props.updateRowWidth(currentTableWidth, hasRightScrollbar);
 		      var tbody = _reactDom2.default.findDOMNode(this.refs.tableBody);
 		      if (tbody) {
 		        tbody.scrollLeft = tableHeader.scrollLeft;
@@ -20424,7 +20424,7 @@
 		    }
 		  }, {
 		    key: '_updateRowWidth',
-		    value: function _updateRowWidth(currentTableWidth, maxRowWidth, hasRightScrollbar) {
+		    value: function _updateRowWidth(currentTableWidth, hasRightScrollbar) {
 		      var _this3 = this;
 
 		      var _props2 = this.props;
@@ -20435,7 +20435,8 @@
 		      var selectedBy = _props2.selectedBy;
 		      var minRowWidth = this.state.minRowWidth;
 
-		      if (maxRowWidth > currentTableWidth) {
+		      var maxRowWidth = void 0;
+		      if (currentTableWidth < minRowWidth) {
 		        maxRowWidth = minRowWidth;
 		      } else {
 		        maxRowWidth = currentTableWidth;
@@ -44081,15 +44082,8 @@
 		      var height = _props.height;
 		      var updateRowWidth = _props.updateRowWidth;
 
-		      var tableBodyContent = _reactDom2.default.findDOMNode(this.refs.tableBodyContent);
 		      var tableBodyItems = _reactDom2.default.findDOMNode(this.refs.tableBodyItems);
-
-		      var _getItemsToRender2 = this._getItemsToRender();
-
-		      var missingNumTop = _getItemsToRender2.missingNumTop;
-		      var missingNumBottom = _getItemsToRender2.missingNumBottom;
-
-		      updateRowWidth(tableBodyContent.offsetWidth, tableBodyItems.offsetHeight > height);
+		      updateRowWidth(tableBodyItems.offsetHeight > height);
 		    }
 		  }, {
 		    key: '_getItemsToRender',
@@ -44145,11 +44139,11 @@
 		      var emptyText = _props3.emptyText;
 		      var idProperty = _props3.idProperty;
 
-		      var _getItemsToRender3 = this._getItemsToRender();
+		      var _getItemsToRender2 = this._getItemsToRender();
 
-		      var arrItemsToRender = _getItemsToRender3.arrItemsToRender;
-		      var missingNumTop = _getItemsToRender3.missingNumTop;
-		      var missingNumBottom = _getItemsToRender3.missingNumBottom;
+		      var arrItemsToRender = _getItemsToRender2.arrItemsToRender;
+		      var missingNumTop = _getItemsToRender2.missingNumTop;
+		      var missingNumBottom = _getItemsToRender2.missingNumBottom;
 
 		      return _react2.default.createElement(
 		        'div',
@@ -44165,7 +44159,6 @@
 		        _react2.default.createElement(
 		          'div',
 		          {
-		            ref: 'tableBodyContent',
 		            style: {
 		              height: height
 		            }

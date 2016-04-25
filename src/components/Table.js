@@ -85,12 +85,11 @@ class Table extends Component {
     const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
     tableHeader.scrollLeft = ev.target.scrollLeft;
   }
-  _updateRowWidth(maxRowWidth, hasRightScrollbar) {
+  _updateRowWidth(hasRightScrollbar) {
     const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
     const currentTableWidth = ReactDOM.findDOMNode(this).offsetWidth;
     this.props.updateRowWidth(
       currentTableWidth,
-      maxRowWidth,
       hasRightScrollbar
     );
     const tbody = ReactDOM.findDOMNode(this.refs.tableBody);
@@ -229,7 +228,7 @@ class TableContainer extends Component {
   _updateState() {
     this.setState(appStore.getAll());
   }
-  _updateRowWidth(currentTableWidth, maxRowWidth, hasRightScrollbar) {
+  _updateRowWidth(currentTableWidth, hasRightScrollbar) {
     const {
       height,
       columnMinWidth,
@@ -238,7 +237,8 @@ class TableContainer extends Component {
       selectedBy
     } = this.props;
     const {minRowWidth} = this.state;
-    if(maxRowWidth > currentTableWidth) {
+    let maxRowWidth;
+    if(currentTableWidth < minRowWidth) {
       maxRowWidth = minRowWidth;
     }
     else {
@@ -262,7 +262,7 @@ class TableContainer extends Component {
           numberOfAutoWidthField--;
           flexColumnWidth = flexColumnWidth - column.width;
         }
-      })
+      });
       if(numberOfAutoWidthField) {
         flexColumnWidth = flexColumnWidth / numberOfAutoWidthField;
         if(flexColumnWidth < columnMinWidth) {
