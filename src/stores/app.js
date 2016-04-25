@@ -9,13 +9,13 @@ const store = {
   getAll: () => data,
 };
 
-store.dispatchToken = dispatcher.register({action} => {
+store.dispatchToken = dispatcher.register(({action}) => {
   switch(action.type) {
     case actionConstants.TODO_CREATE:
       data = {
         ...data,
       };
-      Store.emit(actionConstants.CHANGE_EVENT);
+      Store.emit('change');
       break;
     default:
   }

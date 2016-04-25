@@ -4,6 +4,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import FaSpinner from 'react-icons/lib/fa/spinner';
 import {scrollbarWidth} from '../constants';
+import appStore from '../stores/app';
 import Thead from './TheadContainer';
 import Tbody from './TbodyContainer';
 import styles from './Table.scss';
@@ -211,10 +212,17 @@ class TableContainer extends Component {
     this._updateMinRowWidth = ::this._updateMinRowWidth;
   }
   componentDidMount() {
+    appStore.addListener('change', this._updateState);
     this._updateMinRowWidth();
+  }
+  componentWillUmount() {
+    appStore.removeListener('change', this._updateState);
   }
   componentWillReceiveProps() {
     this._updateMinRowWidth();
+  }
+  _updateState() {
+    this.setState(appStore.getAll());
   }
   _updateRowWidth(maxRowWidth, hasRightScrollbar) {
     const dom = ReactDOM.findDOMNode(this);
