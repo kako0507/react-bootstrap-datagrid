@@ -162,7 +162,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: '_updateRowWidth',
 	    value: function _updateRowWidth(maxRowWidth, hasRightScrollbar) {
 	      var tableHeader = _reactDom2.default.findDOMNode(this.refs.tableHeader);
-	      this.props.updateRowWidth(maxRowWidth, hasRightScrollbar);
+	      var currentTableWidth = _reactDom2.default.findDOMNode(this).offsetWidth;
+	      this.props.updateRowWidth(currentTableWidth, maxRowWidth, hasRightScrollbar);
 	      var tbody = _reactDom2.default.findDOMNode(this.refs.tableBody);
 	      if (tbody) {
 	        tbody.scrollLeft = tableHeader.scrollLeft;
@@ -342,10 +343,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: '_updateRowWidth',
-	    value: function _updateRowWidth(maxRowWidth, hasRightScrollbar) {
+	    value: function _updateRowWidth(currentTableWidth, maxRowWidth, hasRightScrollbar) {
 	      var _this3 = this;
 
-	      var dom = _reactDom2.default.findDOMNode(this);
 	      var _props2 = this.props;
 	      var height = _props2.height;
 	      var columnMinWidth = _props2.columnMinWidth;
@@ -354,10 +354,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var selectedBy = _props2.selectedBy;
 	      var minRowWidth = this.state.minRowWidth;
 
-	      if (maxRowWidth > dom.offsetWidth) {
+	      if (maxRowWidth > currentTableWidth) {
 	        maxRowWidth = minRowWidth;
 	      } else {
-	        maxRowWidth = dom.offsetWidth;
+	        maxRowWidth = currentTableWidth;
 	      }
 	      if (maxRowWidth && this.state.maxRowWidth !== maxRowWidth || hasRightScrollbar !== this.state.hasRightScrollbar) {
 	        (function () {
@@ -448,7 +448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
 	 * @license
-	 * lodash 4.11.1 (Custom Build) <https://lodash.com/>
+	 * lodash 4.10.0 (Custom Build) <https://lodash.com/>
 	 * Build: `lodash -d -o ./foo/lodash.js`
 	 * Copyright jQuery Foundation and other contributors <https://jquery.org/>
 	 * Released under MIT license <https://lodash.com/license>
@@ -461,7 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var undefined;
 
 	  /** Used as the semantic version number. */
-	  var VERSION = '4.11.1';
+	  var VERSION = '4.10.0';
 
 	  /** Used as the size to enable large array optimizations. */
 	  var LARGE_ARRAY_SIZE = 200;
@@ -636,8 +636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rsBreakRange = rsMathOpRange + rsNonCharRange + rsQuoteRange + rsSpaceRange;
 
 	  /** Used to compose unicode capture groups. */
-	  var rsApos = "['\u2019]",
-	      rsAstral = '[' + rsAstralRange + ']',
+	  var rsAstral = '[' + rsAstralRange + ']',
 	      rsBreak = '[' + rsBreakRange + ']',
 	      rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']',
 	      rsDigits = '\\d+',
@@ -655,17 +654,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /** Used to compose unicode regexes. */
 	  var rsLowerMisc = '(?:' + rsLower + '|' + rsMisc + ')',
 	      rsUpperMisc = '(?:' + rsUpper + '|' + rsMisc + ')',
-	      rsOptLowerContr = '(?:' + rsApos + '(?:d|ll|m|re|s|t|ve))?',
-	      rsOptUpperContr = '(?:' + rsApos + '(?:D|LL|M|RE|S|T|VE))?',
 	      reOptMod = rsModifier + '?',
 	      rsOptVar = '[' + rsVarRange + ']?',
 	      rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
 	      rsSeq = rsOptVar + reOptMod + rsOptJoin,
 	      rsEmoji = '(?:' + [rsDingbat, rsRegional, rsSurrPair].join('|') + ')' + rsSeq,
 	      rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
-
-	  /** Used to match apostrophes. */
-	  var reApos = RegExp(rsApos, 'g');
 
 	  /**
 	   * Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks) and
@@ -678,10 +672,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /** Used to match complex or compound words. */
 	  var reComplexWord = RegExp([
-	    rsUpper + '?' + rsLower + '+' + rsOptLowerContr + '(?=' + [rsBreak, rsUpper, '$'].join('|') + ')',
-	    rsUpperMisc + '+' + rsOptUpperContr + '(?=' + [rsBreak, rsUpper + rsLowerMisc, '$'].join('|') + ')',
-	    rsUpper + '?' + rsLowerMisc + '+' + rsOptLowerContr,
-	    rsUpper + '+' + rsOptUpperContr,
+	    rsUpper + '?' + rsLower + '+(?=' + [rsBreak, rsUpper, '$'].join('|') + ')',
+	    rsUpperMisc + '+(?=' + [rsBreak, rsUpper + rsLowerMisc, '$'].join('|') + ')',
+	    rsUpper + '?' + rsLowerMisc + '+',
+	    rsUpper + '+',
 	    rsDigits,
 	    rsEmoji
 	  ].join('|'), 'g');
@@ -1836,8 +1830,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** Used for built-in method references. */
 	    var arrayProto = context.Array.prototype,
-	        objectProto = context.Object.prototype,
-	        stringProto = context.String.prototype;
+	        objectProto = context.Object.prototype;
 
 	    /** Used to resolve the decompiled source of functions. */
 	    var funcToString = context.Function.prototype.toString;
@@ -1892,9 +1885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        nativeMin = Math.min,
 	        nativeParseInt = context.parseInt,
 	        nativeRandom = Math.random,
-	        nativeReplace = stringProto.replace,
-	        nativeReverse = arrayProto.reverse,
-	        nativeSplit = stringProto.split;
+	        nativeReverse = arrayProto.reverse;
 
 	    /* Built-in method references that are verified to be native. */
 	    var DataView = getNative(context, 'DataView'),
@@ -2007,7 +1998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * `isSet`, `isString`, `isUndefined`, `isTypedArray`, `isWeakMap`, `isWeakSet`,
 	     * `join`, `kebabCase`, `last`, `lastIndexOf`, `lowerCase`, `lowerFirst`,
 	     * `lt`, `lte`, `max`, `maxBy`, `mean`, `meanBy`, `min`, `minBy`, `multiply`,
-	     * `noConflict`, `noop`, `now`, `nth`, `pad`, `padEnd`, `padStart`, `parseInt`,
+	     * `noConflict`, `noop`, `now`, `pad`, `padEnd`, `padStart`, `parseInt`,
 	     * `pop`, `random`, `reduce`, `reduceRight`, `repeat`, `result`, `round`,
 	     * `runInContext`, `sample`, `shift`, `size`, `snakeCase`, `some`, `sortedIndex`,
 	     * `sortedIndexBy`, `sortedLastIndex`, `sortedLastIndexBy`, `startCase`,
@@ -3749,23 +3740,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * The base implementation of `_.nth` which doesn't coerce `n` to an integer.
-	     *
-	     * @private
-	     * @param {Array} array The array to query.
-	     * @param {number} n The index of the element to return.
-	     * @returns {*} Returns the nth element of `array`.
-	     */
-	    function baseNth(array, n) {
-	      var length = array.length;
-	      if (!length) {
-	        return;
-	      }
-	      n += n < 0 ? length : 0;
-	      return isIndex(n, length) ? array[n] : undefined;
-	    }
-
-	    /**
 	     * The base implementation of `_.orderBy` without param guards.
 	     *
 	     * @private
@@ -3776,7 +3750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function baseOrderBy(collection, iteratees, orders) {
 	      var index = -1;
-	      iteratees = arrayMap(iteratees.length ? iteratees : [identity], baseUnary(getIteratee()));
+	      iteratees = arrayMap(iteratees.length ? iteratees : [identity], getIteratee());
 
 	      var result = baseMap(collection, function(value, key, collection) {
 	        var criteria = arrayMap(iteratees, function(iteratee) {
@@ -4649,10 +4623,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Object} source The object to copy properties from.
 	     * @param {Array} props The property identifiers to copy.
 	     * @param {Object} [object={}] The object to copy properties to.
+	     * @returns {Object} Returns `object`.
+	     */
+	    function copyObject(source, props, object) {
+	      return copyObjectWith(source, props, object);
+	    }
+
+	    /**
+	     * This function is like `copyObject` except that it accepts a function to
+	     * customize copied values.
+	     *
+	     * @private
+	     * @param {Object} source The object to copy properties from.
+	     * @param {Array} props The property identifiers to copy.
+	     * @param {Object} [object={}] The object to copy properties to.
 	     * @param {Function} [customizer] The function to customize copied values.
 	     * @returns {Object} Returns `object`.
 	     */
-	    function copyObject(source, props, object, customizer) {
+	    function copyObjectWith(source, props, object, customizer) {
 	      object || (object = {});
 
 	      var index = -1,
@@ -4843,7 +4831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function createCompounder(callback) {
 	      return function(string) {
-	        return arrayReduce(words(deburr(string).replace(reApos, '')), callback, '');
+	        return arrayReduce(words(deburr(string)), callback, '');
 	      };
 	    }
 
@@ -5079,10 +5067,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function createOver(arrayFunc) {
 	      return rest(function(iteratees) {
-	        iteratees = (iteratees.length == 1 && isArray(iteratees[0]))
-	          ? arrayMap(iteratees[0], baseUnary(getIteratee()))
-	          : arrayMap(baseFlatten(iteratees, 1, isFlattenableIteratee), baseUnary(getIteratee()));
-
+	        iteratees = arrayMap(baseFlatten(iteratees, 1, isFlattenableIteratee), getIteratee());
 	        return rest(function(args) {
 	          var thisArg = this;
 	          return arrayFunc(iteratees, function(iteratee) {
@@ -5196,6 +5181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function createRecurryWrapper(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary, arity) {
 	      var isCurry = bitmask & CURRY_FLAG,
+	          newArgPos = argPos ? copyArray(argPos) : undefined,
 	          newHolders = isCurry ? holders : undefined,
 	          newHoldersRight = isCurry ? undefined : holders,
 	          newPartials = isCurry ? partials : undefined,
@@ -5209,7 +5195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      var newData = [
 	        func, bitmask, thisArg, newPartials, newHolders, newPartialsRight,
-	        newHoldersRight, argPos, ary, arity
+	        newHoldersRight, newArgPos, ary, arity
 	      ];
 
 	      var result = wrapFunc.apply(undefined, newData);
@@ -6122,20 +6108,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var value = source[3];
 	      if (value) {
 	        var partials = data[3];
-	        data[3] = partials ? composeArgs(partials, value, source[4]) : value;
-	        data[4] = partials ? replaceHolders(data[3], PLACEHOLDER) : source[4];
+	        data[3] = partials ? composeArgs(partials, value, source[4]) : copyArray(value);
+	        data[4] = partials ? replaceHolders(data[3], PLACEHOLDER) : copyArray(source[4]);
 	      }
 	      // Compose partial right arguments.
 	      value = source[5];
 	      if (value) {
 	        partials = data[5];
-	        data[5] = partials ? composeArgsRight(partials, value, source[6]) : value;
-	        data[6] = partials ? replaceHolders(data[5], PLACEHOLDER) : source[6];
+	        data[5] = partials ? composeArgsRight(partials, value, source[6]) : copyArray(value);
+	        data[6] = partials ? replaceHolders(data[5], PLACEHOLDER) : copyArray(source[6]);
 	      }
 	      // Use source `argPos` if available.
 	      value = source[7];
 	      if (value) {
-	        data[7] = value;
+	        data[7] = copyArray(value);
 	      }
 	      // Use source `ary` if it's smaller.
 	      if (srcBitmask & ARY_FLAG) {
@@ -6890,7 +6876,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => undefined
 	     */
 	    function head(array) {
-	      return (array && array.length) ? array[0] : undefined;
+	      return array ? array[0] : undefined;
 	    }
 
 	    /**
@@ -7124,31 +7110,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	      return -1;
-	    }
-
-	    /**
-	     * Gets the nth element of `array`. If `n` is negative, the nth element
-	     * from the end is returned.
-	     *
-	     * @static
-	     * @memberOf _
-	     * @since 4.11.0
-	     * @category Array
-	     * @param {Array} array The array to query.
-	     * @param {number} [n=0] The index of the element to return.
-	     * @returns {*} Returns the nth element of `array`.
-	     * @example
-	     *
-	     * var array = ['a', 'b', 'c', 'd'];
-	     *
-	     * _.nth(array, 1);
-	     * // => 'b'
-	     *
-	     * _.nth(array, -2);
-	     * // => 'c';
-	     */
-	    function nth(array, n) {
-	      return (array && array.length) ? baseNth(array, toInteger(n)) : undefined;
 	    }
 
 	    /**
@@ -9454,11 +9415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else if (length > 2 && isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
 	        iteratees = [iteratees[0]];
 	      }
-	      iteratees = (iteratees.length == 1 && isArray(iteratees[0]))
-	        ? iteratees[0]
-	        : baseFlatten(iteratees, 1, isFlattenableIteratee);
-
-	      return baseOrderBy(collection, iteratees, []);
+	      return baseOrderBy(collection, baseFlatten(iteratees, 1), []);
 	    });
 
 	    /*------------------------------------------------------------------------*/
@@ -9821,13 +9778,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function debounce(func, wait, options) {
 	      var lastArgs,
 	          lastThis,
-	          maxWait,
 	          result,
 	          timerId,
 	          lastCallTime = 0,
 	          lastInvokeTime = 0,
 	          leading = false,
-	          maxing = false,
+	          maxWait = false,
 	          trailing = true;
 
 	      if (typeof func != 'function') {
@@ -9836,8 +9792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wait = toNumber(wait) || 0;
 	      if (isObject(options)) {
 	        leading = !!options.leading;
-	        maxing = 'maxWait' in options;
-	        maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+	        maxWait = 'maxWait' in options && nativeMax(toNumber(options.maxWait) || 0, wait);
 	        trailing = 'trailing' in options ? !!options.trailing : trailing;
 	      }
 
@@ -9865,7 +9820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            timeSinceLastInvoke = time - lastInvokeTime,
 	            result = wait - timeSinceLastCall;
 
-	        return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+	        return maxWait === false ? result : nativeMin(result, maxWait - timeSinceLastInvoke);
 	      }
 
 	      function shouldInvoke(time) {
@@ -9876,7 +9831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // trailing edge, the system time has gone backwards and we're treating
 	        // it as the trailing edge, or we've hit the `maxWait` limit.
 	        return (!lastCallTime || (timeSinceLastCall >= wait) ||
-	          (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+	          (timeSinceLastCall < 0) || (maxWait !== false && timeSinceLastInvoke >= maxWait));
 	      }
 
 	      function timerExpired() {
@@ -9925,12 +9880,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (timerId === undefined) {
 	            return leadingEdge(lastCallTime);
 	          }
-	          if (maxing) {
-	            // Handle invocations in a tight loop.
-	            clearTimeout(timerId);
-	            timerId = setTimeout(timerExpired, wait);
-	            return invokeFunc(lastCallTime);
-	          }
+	          // Handle invocations in a tight loop.
+	          clearTimeout(timerId);
+	          timerId = setTimeout(timerExpired, wait);
+	          return invokeFunc(lastCallTime);
 	        }
 	        if (timerId === undefined) {
 	          timerId = setTimeout(timerExpired, wait);
@@ -10160,10 +10113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => [100, 10]
 	     */
 	    var overArgs = rest(function(func, transforms) {
-	      transforms = (transforms.length == 1 && isArray(transforms[0]))
-	        ? arrayMap(transforms[0], baseUnary(getIteratee()))
-	        : arrayMap(baseFlatten(transforms, 1, isFlattenableIteratee), baseUnary(getIteratee()));
-
+	      transforms = arrayMap(baseFlatten(transforms, 1, isFlattenableIteratee), getIteratee());
 	      var funcsLength = transforms.length;
 	      return rest(function(args) {
 	        var index = -1,
@@ -12169,7 +12119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => { 'a': 1, 'b': 2 }
 	     */
 	    var assignInWith = createAssigner(function(object, source, srcIndex, customizer) {
-	      copyObject(source, keysIn(source), object, customizer);
+	      copyObjectWith(source, keysIn(source), object, customizer);
 	    });
 
 	    /**
@@ -12200,7 +12150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * // => { 'a': 1, 'b': 2 }
 	     */
 	    var assignWith = createAssigner(function(object, source, srcIndex, customizer) {
-	      copyObject(source, keys(source), object, customizer);
+	      copyObjectWith(source, keys(source), object, customizer);
 	    });
 
 	    /**
@@ -14027,7 +13977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var args = arguments,
 	          string = toString(args[0]);
 
-	      return args.length < 3 ? string : nativeReplace.call(string, args[1], args[2]);
+	      return args.length < 3 ? string : string.replace(args[1], args[2]);
 	    }
 
 	    /**
@@ -14092,7 +14042,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return castSlice(stringToArray(string), 0, limit);
 	        }
 	      }
-	      return nativeSplit.call(string, separator, limit);
+	      return string.split(separator, limit);
 	    }
 
 	    /**
@@ -15151,7 +15101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        object = this;
 	        methodNames = baseFunctions(source, keys(source));
 	      }
-	      var chain = !(isObject(options) && 'chain' in options) || !!options.chain,
+	      var chain = (isObject(options) && 'chain' in options) ? options.chain : true,
 	          isFunc = isFunction(object);
 
 	      arrayEach(methodNames, function(methodName) {
@@ -15216,8 +15166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Creates a function that returns its nth argument. If `n` is negative,
-	     * the nth argument from the end is returned.
+	     * Creates a function that returns its nth argument.
 	     *
 	     * @static
 	     * @memberOf _
@@ -15228,18 +15177,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example
 	     *
 	     * var func = _.nthArg(1);
-	     * func('a', 'b', 'c', 'd');
-	     * // => 'b'
 	     *
-	     * var func = _.nthArg(-2);
-	     * func('a', 'b', 'c', 'd');
-	     * // => 'c'
+	     * func('a', 'b', 'c');
+	     * // => 'b'
 	     */
 	    function nthArg(n) {
 	      n = toInteger(n);
-	      return rest(function(args) {
-	        return baseNth(args, n);
-	      });
+	      return function() {
+	        return arguments[n];
+	      };
 	    }
 
 	    /**
@@ -16147,7 +16093,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    lodash.min = min;
 	    lodash.minBy = minBy;
 	    lodash.multiply = multiply;
-	    lodash.nth = nth;
 	    lodash.noConflict = noConflict;
 	    lodash.noop = noop;
 	    lodash.now = now;
@@ -16552,51 +16497,42 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
+	exports.__esModule = true;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(2);
 	var IconBase = __webpack_require__(8);
 
-	var FaSpinner = function (_React$Component) {
+	var FaSpinner = (function (_React$Component) {
 	    _inherits(FaSpinner, _React$Component);
 
 	    function FaSpinner() {
 	        _classCallCheck(this, FaSpinner);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(FaSpinner).apply(this, arguments));
+	        _React$Component.apply(this, arguments);
 	    }
 
-	    _createClass(FaSpinner, [{
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                IconBase,
-	                _extends({ viewBox: '0 0 40 40' }, this.props),
-	                React.createElement(
-	                    'g',
-	                    null,
-	                    React.createElement('path', { d: 'm11.742857142857144 31.114285714285717q0 1.1857142857142868-0.838571428571429 2.0214285714285687t-2.0199999999999996 0.8371428571428581q-1.161428571428571 0-2.01-0.8471428571428561t-0.845714285714287-2.0114285714285707q0-1.1814285714285724 0.8357142857142854-2.0185714285714305t2.0199999999999996-0.8371428571428581 2.0185714285714287 0.8385714285714272 0.8371428571428563 2.0199999999999996z m11.114285714285714 4.599999999999998q0 1.182857142857145-0.8371428571428581 2.020000000000003t-2.0199999999999996 0.837142857142851-2.0199999999999996-0.8371428571428581-0.8371428571428581-2.019999999999996 0.8371428571428581-2.020000000000003 2.0199999999999996-0.837142857142851 2.0199999999999996 0.8371428571428581 0.8371428571428581 2.019999999999996z m-15.714285714285715-15.714285714285715q8.881784197001252e-16 1.1828571428571415-0.8371428571428563 2.0199999999999996t-2.0200000000000005 0.8371428571428581-2.02-0.8371428571428581-0.837142857142857-2.0199999999999996 0.837142857142857-2.0199999999999996 2.02-0.8371428571428581 2.0200000000000005 0.8371428571428581 0.8371428571428572 2.0199999999999996z m26.828571428571433 11.114285714285714q0 1.1614285714285728-0.8471428571428561 2.009999999999998t-2.008571428571429 0.8485714285714252q-1.1814285714285724 0-2.018571428571427-0.835714285714289t-0.8371428571428581-2.0199999999999996 0.8385714285714272-2.0185714285714305 2.0199999999999996-0.8371428571428581 2.0214285714285687 0.8385714285714272 0.8371428571428581 2.0199999999999996z m-21.514285714285716-22.228571428571428q0 1.4714285714285715-1.0500000000000007 2.5214285714285722t-2.5214285714285722 1.0500000000000007-2.524285714285714-1.0500000000000007-1.0471428571428572-2.5214285714285722 1.0471428571428572-2.524285714285714 2.524285714285714-1.0471428571428572 2.5214285714285722 1.0471428571428572 1.048571428571428 2.522857142857143z m26.11428571428571 11.114285714285714q0 1.1828571428571415-0.8371428571428581 2.0199999999999996t-2.019999999999996 0.8371428571428581-2.020000000000003-0.8371428571428581-0.837142857142851-2.0199999999999996 0.8371428571428581-2.0199999999999996 2.019999999999996-0.8371428571428581 2.020000000000003 0.8371428571428581 0.837142857142851 2.0199999999999996z m-14.285714285714285-15.714285714285715q0 1.7857142857142865-1.25 3.0357142857142865t-3.0357142857142847 1.25-3.0357142857142847-1.25-1.25-3.0357142857142856 1.25-3.0357142857142856 3.0357142857142847-1.25 3.0357142857142847 1.25 1.25 3.0357142857142856z m11.82857142857143 4.600000000000001q0 2.0742857142857147-1.471428571428575 3.5371428571428574t-3.5285714285714214 1.4628571428571426q-2.0742857142857147 0-3.5371428571428574-1.4628571428571426t-1.4628571428571426-3.5371428571428574q0-2.0542857142857143 1.4628571428571426-3.5285714285714285t3.53857142857143-1.4714285714285715q2.0542857142857116 0 3.528571428571432 1.4714285714285715t1.471428571428568 3.5285714285714285z' })
-	                )
-	            );
-	        }
-	    }]);
+	    FaSpinner.prototype.render = function render() {
+	        return React.createElement(
+	            IconBase,
+	            _extends({ viewBox: '0 0 40 40' }, this.props),
+	            React.createElement(
+	                'g',
+	                null,
+	                React.createElement('path', { d: 'm11.742857142857144 31.114285714285717q0 1.1857142857142868-0.838571428571429 2.0214285714285687t-2.0199999999999996 0.8371428571428581q-1.161428571428571 0-2.01-0.8471428571428561t-0.845714285714287-2.0114285714285707q0-1.1814285714285724 0.8357142857142854-2.0185714285714305t2.0199999999999996-0.8371428571428581 2.0185714285714287 0.8385714285714272 0.8371428571428563 2.0199999999999996z m11.114285714285714 4.599999999999998q0 1.182857142857145-0.8371428571428581 2.020000000000003t-2.0199999999999996 0.837142857142851-2.0199999999999996-0.8371428571428581-0.8371428571428581-2.019999999999996 0.8371428571428581-2.020000000000003 2.0199999999999996-0.837142857142851 2.0199999999999996 0.8371428571428581 0.8371428571428581 2.019999999999996z m-15.714285714285715-15.714285714285715q8.881784197001252e-16 1.1828571428571415-0.8371428571428563 2.0199999999999996t-2.0200000000000005 0.8371428571428581-2.02-0.8371428571428581-0.837142857142857-2.0199999999999996 0.837142857142857-2.0199999999999996 2.02-0.8371428571428581 2.0200000000000005 0.8371428571428581 0.8371428571428572 2.0199999999999996z m26.828571428571433 11.114285714285714q0 1.1614285714285728-0.8471428571428561 2.009999999999998t-2.008571428571429 0.8485714285714252q-1.1814285714285724 0-2.018571428571427-0.835714285714289t-0.8371428571428581-2.0199999999999996 0.8385714285714272-2.0185714285714305 2.0199999999999996-0.8371428571428581 2.0214285714285687 0.8385714285714272 0.8371428571428581 2.0199999999999996z m-21.514285714285716-22.228571428571428q0 1.4714285714285715-1.0500000000000007 2.5214285714285722t-2.5214285714285722 1.0500000000000007-2.524285714285714-1.0500000000000007-1.0471428571428572-2.5214285714285722 1.0471428571428572-2.524285714285714 2.524285714285714-1.0471428571428572 2.5214285714285722 1.0471428571428572 1.048571428571428 2.522857142857143z m26.11428571428571 11.114285714285714q0 1.1828571428571415-0.8371428571428581 2.0199999999999996t-2.019999999999996 0.8371428571428581-2.020000000000003-0.8371428571428581-0.837142857142851-2.0199999999999996 0.8371428571428581-2.0199999999999996 2.019999999999996-0.8371428571428581 2.020000000000003 0.8371428571428581 0.837142857142851 2.0199999999999996z m-14.285714285714285-15.714285714285715q0 1.7857142857142865-1.25 3.0357142857142865t-3.0357142857142847 1.25-3.0357142857142847-1.25-1.25-3.0357142857142856 1.25-3.0357142857142856 3.0357142857142847-1.25 3.0357142857142847 1.25 1.25 3.0357142857142856z m11.82857142857143 4.600000000000001q0 2.0742857142857147-1.471428571428575 3.5371428571428574t-3.5285714285714214 1.4628571428571426q-2.0742857142857147 0-3.5371428571428574-1.4628571428571426t-1.4628571428571426-3.5371428571428574q0-2.0542857142857143 1.4628571428571426-3.5285714285714285t3.53857142857143-1.4714285714285715q2.0542857142857116 0 3.528571428571432 1.4714285714285715t1.471428571428568 3.5285714285714285z' })
+	            )
+	        );
+	    };
 
 	    return FaSpinner;
-	}(React.Component);
+	})(React.Component);
 
-	exports.default = FaSpinner;
+	exports['default'] = FaSpinner;
 	module.exports = exports['default'];
 
 /***/ },
@@ -16714,13 +16650,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var data = {};
-	var store = _extends({}, new _events.EventEmitter(), {
-	  getAll: function getAll() {
-	    return data;
-	  }
-	});
+	var data = {
+	  minRowWidth: 100,
+	  maxRowWidth: 100,
+	  flexColumnWidth: 100,
+	  hasRightScrollbar: false
+	};
 
+	var store = new _events.EventEmitter();
+	store.getAll = function () {
+	  return data;
+	};
 	store.dispatchToken = _dispatcher2.default.register(function (_ref) {
 	  var action = _ref.action;
 
@@ -17163,14 +17103,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var actions = {};
-	exports.default = actions;
+	var action = {};
+	exports.default = action;
 
 /***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.updateRowWidth = updateRowWidth;
+	exports.updateMinRowWidth = updateMinRowWidth;
 
 	var _dispatcher = __webpack_require__(11);
 
@@ -17181,6 +17127,74 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _action2 = _interopRequireDefault(_action);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function updateRowWidth(maxRowWidth, hasRightScrollbar) {
+	  var _this = this;
+
+	  var currentTableWidth = ReactDOM.findDOMNode(this).offsetWidth;
+	  var _props = this.props;
+	  var height = _props.height;
+	  var columnMinWidth = _props.columnMinWidth;
+	  var columns = _props.columns;
+	  var onSelectionChange = _props.onSelectionChange;
+	  var selectedBy = _props.selectedBy;
+	  var minRowWidth = this.state.minRowWidth;
+
+	  if (maxRowWidth > currentTableWidth) {
+	    maxRowWidth = minRowWidth;
+	  } else {
+	    maxRowWidth = currentTableWidth;
+	  }
+	  if (maxRowWidth && this.state.maxRowWidth !== maxRowWidth || hasRightScrollbar !== this.state.hasRightScrollbar) {
+	    (function () {
+	      var flexColumnWidth = maxRowWidth;
+	      // sub width of scrollbar
+	      if (height > 0 && hasRightScrollbar) {
+	        flexColumnWidth -= 17;
+	      }
+	      if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
+	        flexColumnWidth -= 40;
+	      }
+	      var numberOfAutoWidthField = columns.length;
+	      columns.forEach(function (column) {
+	        if (column.width) {
+	          numberOfAutoWidthField--;
+	          flexColumnWidth = flexColumnWidth - column.width;
+	        }
+	      });
+	      if (numberOfAutoWidthField) {
+	        flexColumnWidth = flexColumnWidth / numberOfAutoWidthField;
+	        if (flexColumnWidth < columnMinWidth) {
+	          flexColumnWidth = columnMinWidth;
+	        }
+	      }
+	      _this.setState({
+	        maxRowWidth: maxRowWidth,
+	        flexColumnWidth: flexColumnWidth,
+	        hasRightScrollbar: hasRightScrollbar
+	      });
+	    })();
+	  }
+	}
+
+	function updateMinRowWidth() {
+	  var _props2 = this.props;
+	  var onSelectionChange = _props2.onSelectionChange;
+	  var selectedBy = _props2.selectedBy;
+	  var columns = _props2.columns;
+	  var columnMinWidth = _props2.columnMinWidth;
+
+	  var minRowWidth = -2;
+	  if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
+	    minRowWidth += 40;
+	  }
+	  columns.forEach(function (column) {
+	    minRowWidth += column.width || columnMinWidth;
+	  });
+	  this.setState({
+	    minRowWidth: minRowWidth
+	  });
+	}
 
 /***/ },
 /* 18 */
@@ -17788,7 +17802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	(function (global, factory) {
 	   true ? module.exports = factory() :
 	  typeof define === 'function' && define.amd ? define(factory) :
-	  (global.Immutable = factory());
+	  global.Immutable = factory();
 	}(this, function () { 'use strict';var SLICE$0 = Array.prototype.slice;
 
 	  function createClass(ctor, superClass) {
@@ -18683,7 +18697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return 'Range [ ' +
 	        this._start + '...' + this._end +
-	        (this._step !== 1 ? ' by ' + this._step : '') +
+	        (this._step > 1 ? ' by ' + this._step : '') +
 	      ' ]';
 	    };
 
@@ -18815,9 +18829,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var type = typeof o;
 	    if (type === 'number') {
-	      if (o !== o || o === Infinity) {
-	        return 0;
-	      }
 	      var h = o | 0;
 	      if (h !== o) {
 	        h ^= o * 0xFFFFFFFF;
@@ -19002,17 +19013,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          iter.forEach(function(v, k)  {return map.set(k, v)});
 	        });
 	    }
-
-	    Map.of = function() {var keyValues = SLICE$0.call(arguments, 0);
-	      return emptyMap().withMutations(function(map ) {
-	        for (var i = 0; i < keyValues.length; i += 2) {
-	          if (i + 1 >= keyValues.length) {
-	            throw new Error('Missing value for key: ' + keyValues[i]);
-	          }
-	          map.set(keyValues[i], keyValues[i + 1]);
-	        }
-	      });
-	    };
 
 	    Map.prototype.toString = function() {
 	      return this.__toString('Map {', '}');
@@ -20926,11 +20926,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      begin = begin | 0;
 	    }
 	    if (end !== undefined) {
-	      if (end === Infinity) {
-	        end = originalSize;
-	      } else {
-	        end = end | 0;
-	      }
+	      end = end | 0;
 	    }
 
 	    if (wholeSlice(begin, end, originalSize)) {
@@ -21466,12 +21462,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Record.prototype.set = function(k, v) {
 	      if (!this.has(k)) {
 	        throw new Error('Cannot set unknown key "' + k + '" on ' + recordName(this));
-	      }
-	      if (this._map && !this._map.has(k)) {
-	        var defaultVal = this._defaultValues[k];
-	        if (v === defaultVal) {
-	          return this;
-	        }
 	      }
 	      var newMap = this._map && this._map.set(k, v);
 	      if (this.__ownerID || newMap === this._map) {
@@ -22156,6 +22146,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return entry ? entry[1] : notSetValue;
 	    },
 
+	    findEntry: function(predicate, context) {
+	      var found;
+	      this.__iterate(function(v, k, c)  {
+	        if (predicate.call(context, v, k, c)) {
+	          found = [k, v];
+	          return false;
+	        }
+	      });
+	      return found;
+	    },
+
+	    findLastEntry: function(predicate, context) {
+	      return this.toSeq().reverse().findEntry(predicate, context);
+	    },
+
 	    forEach: function(sideEffect, context) {
 	      assertNotInfinite(this.size);
 	      return this.__iterate(context ? sideEffect.bind(context) : sideEffect);
@@ -22266,32 +22271,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.filter(not(predicate), context);
 	    },
 
-	    findEntry: function(predicate, context, notSetValue) {
-	      var found = notSetValue;
-	      this.__iterate(function(v, k, c)  {
-	        if (predicate.call(context, v, k, c)) {
-	          found = [k, v];
-	          return false;
-	        }
-	      });
-	      return found;
-	    },
-
-	    findKey: function(predicate, context) {
-	      var entry = this.findEntry(predicate, context);
-	      return entry && entry[0];
-	    },
-
 	    findLast: function(predicate, context, notSetValue) {
 	      return this.toKeyedSeq().reverse().find(predicate, context, notSetValue);
-	    },
-
-	    findLastEntry: function(predicate, context, notSetValue) {
-	      return this.toKeyedSeq().reverse().findEntry(predicate, context, notSetValue);
-	    },
-
-	    findLastKey: function(predicate, context) {
-	      return this.toKeyedSeq().reverse().findKey(predicate, context);
 	    },
 
 	    first: function() {
@@ -22352,20 +22333,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return iter.isSubset(this);
 	    },
 
-	    keyOf: function(searchValue) {
-	      return this.findKey(function(value ) {return is(value, searchValue)});
-	    },
-
 	    keySeq: function() {
 	      return this.toSeq().map(keyMapper).toIndexedSeq();
 	    },
 
 	    last: function() {
 	      return this.toSeq().reverse().first();
-	    },
-
-	    lastKeyOf: function(searchValue) {
-	      return this.toKeyedSeq().reverse().keyOf(searchValue);
 	    },
 
 	    max: function(comparator) {
@@ -22458,12 +22431,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	  IterablePrototype.chain = IterablePrototype.flatMap;
 	  IterablePrototype.contains = IterablePrototype.includes;
 
+	  // Temporary warning about using length
+	  (function () {
+	    try {
+	      Object.defineProperty(IterablePrototype, 'length', {
+	        get: function () {
+	          if (!Iterable.noLengthWarning) {
+	            var stack;
+	            try {
+	              throw new Error();
+	            } catch (error) {
+	              stack = error.stack;
+	            }
+	            if (stack.indexOf('_wrapObject') === -1) {
+	              console && console.warn && console.warn(
+	                'iterable.length has been deprecated, '+
+	                'use iterable.size or iterable.count(). '+
+	                'This warning will become a silent error in a future version. ' +
+	                stack
+	              );
+	              return this.size;
+	            }
+	          }
+	        }
+	      });
+	    } catch (e) {}
+	  })();
+
+
+
 	  mixin(KeyedIterable, {
 
 	    // ### More sequential methods
 
 	    flip: function() {
 	      return reify(this, flipFactory(this));
+	    },
+
+	    findKey: function(predicate, context) {
+	      var entry = this.findEntry(predicate, context);
+	      return entry && entry[0];
+	    },
+
+	    findLastKey: function(predicate, context) {
+	      return this.toSeq().reverse().findKey(predicate, context);
+	    },
+
+	    keyOf: function(searchValue) {
+	      return this.findKey(function(value ) {return is(value, searchValue)});
+	    },
+
+	    lastKeyOf: function(searchValue) {
+	      return this.findLastKey(function(value ) {return is(value, searchValue)});
 	    },
 
 	    mapEntries: function(mapper, context) {var this$0 = this;
@@ -22514,13 +22533,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    indexOf: function(searchValue) {
-	      var key = this.keyOf(searchValue);
+	      var key = this.toKeyedSeq().keyOf(searchValue);
 	      return key === undefined ? -1 : key;
 	    },
 
 	    lastIndexOf: function(searchValue) {
-	      var key = this.lastKeyOf(searchValue);
+	      var key = this.toKeyedSeq().reverse().keyOf(searchValue);
 	      return key === undefined ? -1 : key;
+
+	      // var index =
+	      // return this.toSeq().reverse().indexOf(searchValue);
 	    },
 
 	    reverse: function() {
@@ -22554,8 +22576,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // ### More collection methods
 
 	    findLastIndex: function(predicate, context) {
-	      var entry = this.findLastEntry(predicate, context);
-	      return entry ? entry[0] : -1;
+	      var key = this.toKeyedSeq().findLastKey(predicate, context);
+	      return key === undefined ? -1 : key;
 	    },
 
 	    first: function() {
@@ -22594,10 +22616,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        interleaved.size = zipped.size * iterables.length;
 	      }
 	      return reify(this, interleaved);
-	    },
-
-	    keySeq: function() {
-	      return Range(0, this.size);
 	    },
 
 	    last: function() {
@@ -22648,7 +22666,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 
 	  SetIterable.prototype.has = IterablePrototype.includes;
-	  SetIterable.prototype.contains = SetIterable.prototype.includes;
 
 
 	  // Mixin subclasses
@@ -22685,7 +22702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function quoteString(value) {
-	    return typeof value === 'string' ? JSON.stringify(value) : String(value);
+	    return typeof value === 'string' ? JSON.stringify(value) : value;
 	  }
 
 	  function defaultZipper() {

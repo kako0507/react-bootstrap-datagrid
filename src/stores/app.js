@@ -10,11 +10,8 @@ let data = {
   hasRightScrollbar: false
 };
 
-const store = {
-  ...new EventEmitter(),
-  getAll: () => data,
-};
-
+const store = new EventEmitter();
+store.getAll  = () => data;
 store.dispatchToken = dispatcher.register(({action}) => {
   switch(action.type) {
     case actionConstants.TODO_CREATE:

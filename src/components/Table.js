@@ -87,7 +87,12 @@ class Table extends Component {
   }
   _updateRowWidth(maxRowWidth, hasRightScrollbar) {
     const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
-    this.props.updateRowWidth(maxRowWidth, hasRightScrollbar);
+    const currentTableWidth = ReactDOM.findDOMNode(this).offsetWidth;
+    this.props.updateRowWidth(
+      currentTableWidth,
+      maxRowWidth,
+      hasRightScrollbar
+    );
     const tbody = ReactDOM.findDOMNode(this.refs.tableBody);
     if(tbody) {
       tbody.scrollLeft = tableHeader.scrollLeft;
@@ -224,8 +229,7 @@ class TableContainer extends Component {
   _updateState() {
     this.setState(appStore.getAll());
   }
-  _updateRowWidth(maxRowWidth, hasRightScrollbar) {
-    const dom = ReactDOM.findDOMNode(this);
+  _updateRowWidth(currentTableWidth, maxRowWidth, hasRightScrollbar) {
     const {
       height,
       columnMinWidth,
@@ -234,11 +238,11 @@ class TableContainer extends Component {
       selectedBy
     } = this.props;
     const {minRowWidth} = this.state;
-    if(maxRowWidth > dom.offsetWidth) {
+    if(maxRowWidth > currentTableWidth) {
       maxRowWidth = minRowWidth;
     }
     else {
-      maxRowWidth = dom.offsetWidth;
+      maxRowWidth = currentTableWidth;
     }
     if(
       (maxRowWidth && this.state.maxRowWidth !== maxRowWidth)
