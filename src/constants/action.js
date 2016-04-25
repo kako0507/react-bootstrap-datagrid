@@ -1,2 +1,2 @@
-const actions = {};
-export default actions;
+const action = {};
+export default action;

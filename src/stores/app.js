@@ -3,7 +3,13 @@ import actionConstants from '../constants/action';
 import * as actions from '../actions/app';
 import {EventEmitter} from 'events';
 
-let data = {};
+let data = {
+  minRowWidth: 100,
+  maxRowWidth: 100,
+  flexColumnWidth: 100,
+  hasRightScrollbar: false
+};
+
 const store = {
   ...new EventEmitter(),
   getAll: () => data,
