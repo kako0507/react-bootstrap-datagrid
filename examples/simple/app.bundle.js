@@ -20178,7 +20178,11 @@
 
 		var _app = __webpack_require__(10);
 
-		var _app2 = _interopRequireDefault(_app);
+		var actions = _interopRequireWildcard(_app);
+
+		var _app2 = __webpack_require__(17);
+
+		var _app3 = _interopRequireDefault(_app2);
 
 		var _TheadContainer = __webpack_require__(19);
 
@@ -20191,6 +20195,8 @@
 		var _Table = __webpack_require__(38);
 
 		var _Table2 = _interopRequireDefault(_Table);
+
+		function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20396,6 +20402,7 @@
 
 		    _this2.state = {};
 
+		    _this2._updateState = _this2._updateState.bind(_this2);
 		    _this2._updateRowWidth = _this2._updateRowWidth.bind(_this2);
 		    _this2._updateMinRowWidth = _this2._updateMinRowWidth.bind(_this2);
 		    return _this2;
@@ -20404,13 +20411,13 @@
 		  _createClass(TableContainer, [{
 		    key: 'componentDidMount',
 		    value: function componentDidMount() {
-		      _app2.default.addListener('change', this._updateState);
+		      _app3.default.addListener('change', this._updateState);
 		      this._updateMinRowWidth();
 		    }
 		  }, {
 		    key: 'componentWillUmount',
 		    value: function componentWillUmount() {
-		      _app2.default.removeListener('change', this._updateState);
+		      _app3.default.removeListener('change', this._updateState);
 		    }
 		  }, {
 		    key: 'componentWillReceiveProps',
@@ -20420,77 +20427,20 @@
 		  }, {
 		    key: '_updateState',
 		    value: function _updateState() {
-		      this.setState(_app2.default.getAll());
+		      this.setState(_app3.default.getAll());
 		    }
 		  }, {
 		    key: '_updateRowWidth',
 		    value: function _updateRowWidth(currentTableWidth, hasRightScrollbar) {
-		      var _this3 = this;
-
-		      var _props2 = this.props;
-		      var height = _props2.height;
-		      var columnMinWidth = _props2.columnMinWidth;
-		      var columns = _props2.columns;
-		      var onSelectionChange = _props2.onSelectionChange;
-		      var selectedBy = _props2.selectedBy;
-		      var minRowWidth = this.state.minRowWidth;
-
-		      var maxRowWidth = void 0;
-		      if (currentTableWidth < minRowWidth) {
-		        maxRowWidth = minRowWidth;
-		      } else {
-		        maxRowWidth = currentTableWidth;
-		      }
-		      if (maxRowWidth && this.state.maxRowWidth !== maxRowWidth || hasRightScrollbar !== this.state.hasRightScrollbar) {
-		        (function () {
-		          var flexColumnWidth = maxRowWidth;
-		          // sub width of scrollbar
-		          if (height > 0 && hasRightScrollbar) {
-		            flexColumnWidth -= 17;
-		          }
-		          if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
-		            flexColumnWidth -= 40;
-		          }
-		          var numberOfAutoWidthField = columns.length;
-		          columns.forEach(function (column) {
-		            if (column.width) {
-		              numberOfAutoWidthField--;
-		              flexColumnWidth = flexColumnWidth - column.width;
-		            }
-		          });
-		          if (numberOfAutoWidthField) {
-		            flexColumnWidth = flexColumnWidth / numberOfAutoWidthField;
-		            if (flexColumnWidth < columnMinWidth) {
-		              flexColumnWidth = columnMinWidth;
-		            }
-		          }
-		          _this3.setState({
-		            maxRowWidth: maxRowWidth,
-		            flexColumnWidth: flexColumnWidth,
-		            hasRightScrollbar: hasRightScrollbar
-		          });
-		        })();
-		      }
+		      actions.updateRowWidth(_extends({}, this.props, {
+		        currentTableWidth: currentTableWidth,
+		        hasRightScrollbar: hasRightScrollbar
+		      }));
 		    }
 		  }, {
 		    key: '_updateMinRowWidth',
 		    value: function _updateMinRowWidth() {
-		      var _props3 = this.props;
-		      var onSelectionChange = _props3.onSelectionChange;
-		      var selectedBy = _props3.selectedBy;
-		      var columns = _props3.columns;
-		      var columnMinWidth = _props3.columnMinWidth;
-
-		      var minRowWidth = -2;
-		      if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
-		        minRowWidth += 40;
-		      }
-		      columns.forEach(function (column) {
-		        minRowWidth += column.width || columnMinWidth;
-		      });
-		      this.setState({
-		        minRowWidth: minRowWidth
-		      });
+		      actions.updateMinRowWidth(this.props);
 		    }
 		  }, {
 		    key: 'render',
@@ -36711,8 +36661,8 @@
 		Object.defineProperty(exports, "__esModule", {
 		  value: true
 		});
-
-		var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+		exports.updateRowWidth = updateRowWidth;
+		exports.updateMinRowWidth = updateMinRowWidth;
 
 		var _dispatcher = __webpack_require__(11);
 
@@ -36722,40 +36672,37 @@
 
 		var _action2 = _interopRequireDefault(_action);
 
-		var _app = __webpack_require__(17);
-
-		var actions = _interopRequireWildcard(_app);
-
-		var _events = __webpack_require__(18);
-
-		function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-		var data = {
-		  minRowWidth: 100,
-		  maxRowWidth: 100,
-		  flexColumnWidth: 100,
-		  hasRightScrollbar: false
-		};
+		var dispatch = _dispatcher2.default.dispatch.bind(_dispatcher2.default);
 
-		var store = new _events.EventEmitter();
-		store.getAll = function () {
-		  return data;
-		};
-		store.dispatchToken = _dispatcher2.default.register(function (_ref) {
-		  var action = _ref.action;
+		function updateRowWidth(data) {
+		  dispatch({
+		    type: _action2.default.SET_ROW_WIDTH,
+		    data: data
+		  });
+		}
 
-		  switch (action.type) {
-		    case _action2.default.TODO_CREATE:
-		      data = _extends({}, data);
-		      Store.emit('change');
-		      break;
-		    default:
+		function updateMinRowWidth(_ref) {
+		  var onSelectionChange = _ref.onSelectionChange;
+		  var selectedBy = _ref.selectedBy;
+		  var columns = _ref.columns;
+		  var columnMinWidth = _ref.columnMinWidth;
+
+		  var minRowWidth = -2;
+		  if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
+		    minRowWidth += 40;
 		  }
-		});
-
-		exports.default = store;
+		  columns.forEach(function (column) {
+		    minRowWidth += column.width || columnMinWidth;
+		  });
+		  dispatch({
+		    type: _action2.default.SET_MIN_ROW_WIDTH,
+		    data: {
+		      minRowWidth: minRowWidth
+		    }
+		  });
+		}
 
 	/***/ },
 	/* 11 */
@@ -36769,7 +36716,8 @@
 
 		var _flux = __webpack_require__(12);
 
-		exports.default = new _flux.Dispatcher();
+		var dispatcher = new _flux.Dispatcher();
+		exports.default = dispatcher;
 
 	/***/ },
 	/* 12 */
@@ -37178,15 +37126,25 @@
 
 	/***/ },
 	/* 16 */
-	/***/ function(module, exports) {
+	/***/ function(module, exports, __webpack_require__) {
 
-		"use strict";
+		'use strict';
 
 		Object.defineProperty(exports, "__esModule", {
 		  value: true
 		});
-		var action = {};
-		exports.default = action;
+
+		var _lodash = __webpack_require__(4);
+
+		var _lodash2 = _interopRequireDefault(_lodash);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		var action = ['SET_ROW_WIDTH', 'SET_MIN_ROW_WIDTH'];
+
+		exports.default = (0, _lodash2.default)(action).mapKeys(function (value) {
+		  return value;
+		}).value();
 
 	/***/ },
 	/* 17 */
@@ -37197,8 +37155,8 @@
 		Object.defineProperty(exports, "__esModule", {
 		  value: true
 		});
-		exports.updateRowWidth = updateRowWidth;
-		exports.updateMinRowWidth = updateMinRowWidth;
+
+		var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 		var _dispatcher = __webpack_require__(11);
 
@@ -37208,75 +37166,90 @@
 
 		var _action2 = _interopRequireDefault(_action);
 
+		var _app = __webpack_require__(10);
+
+		var actions = _interopRequireWildcard(_app);
+
+		var _events = __webpack_require__(18);
+
+		function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-		function updateRowWidth(maxRowWidth, hasRightScrollbar) {
-		  var _this = this;
+		var data = {
+		  minRowWidth: 100,
+		  maxRowWidth: 100,
+		  flexColumnWidth: 100,
+		  hasRightScrollbar: false
+		};
 
-		  var currentTableWidth = ReactDOM.findDOMNode(this).offsetWidth;
-		  var _props = this.props;
-		  var height = _props.height;
-		  var columnMinWidth = _props.columnMinWidth;
-		  var columns = _props.columns;
-		  var onSelectionChange = _props.onSelectionChange;
-		  var selectedBy = _props.selectedBy;
-		  var minRowWidth = this.state.minRowWidth;
+		var store = new _events.EventEmitter();
+		store.getAll = function () {
+		  return data;
+		};
+		store.dispatchToken = _dispatcher2.default.register(function (action) {
+		  switch (action.type) {
+		    case _action2.default.SET_ROW_WIDTH:
+		      {
+		        var _action$data = action.data;
+		        var currentTableWidth = _action$data.currentTableWidth;
+		        var hasRightScrollbar = _action$data.hasRightScrollbar;
+		        var height = _action$data.height;
+		        var onSelectionChange = _action$data.onSelectionChange;
+		        var selectedBy = _action$data.selectedBy;
+		        var columns = _action$data.columns;
+		        var columnMinWidth = _action$data.columnMinWidth;
 
-		  if (maxRowWidth > currentTableWidth) {
-		    maxRowWidth = minRowWidth;
-		  } else {
-		    maxRowWidth = currentTableWidth;
-		  }
-		  if (maxRowWidth && this.state.maxRowWidth !== maxRowWidth || hasRightScrollbar !== this.state.hasRightScrollbar) {
-		    (function () {
-		      var flexColumnWidth = maxRowWidth;
-		      // sub width of scrollbar
-		      if (height > 0 && hasRightScrollbar) {
-		        flexColumnWidth -= 17;
-		      }
-		      if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
-		        flexColumnWidth -= 40;
-		      }
-		      var numberOfAutoWidthField = columns.length;
-		      columns.forEach(function (column) {
-		        if (column.width) {
-		          numberOfAutoWidthField--;
-		          flexColumnWidth = flexColumnWidth - column.width;
+		        var maxRowWidth = void 0;
+		        if (currentTableWidth < data.minRowWidth) {
+		          maxRowWidth = data.minRowWidth;
+		        } else {
+		          maxRowWidth = currentTableWidth;
 		        }
-		      });
-		      if (numberOfAutoWidthField) {
-		        flexColumnWidth = flexColumnWidth / numberOfAutoWidthField;
-		        if (flexColumnWidth < columnMinWidth) {
-		          flexColumnWidth = columnMinWidth;
+		        if (maxRowWidth && data.maxRowWidth !== maxRowWidth || hasRightScrollbar !== data.hasRightScrollbar) {
+		          (function () {
+		            var flexColumnWidth = maxRowWidth;
+		            // sub width of scrollbar
+		            if (height > 0 && hasRightScrollbar) {
+		              flexColumnWidth -= 17;
+		            }
+		            if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
+		              flexColumnWidth -= 40;
+		            }
+		            var numberOfAutoWidthField = columns.length;
+		            columns.forEach(function (column) {
+		              if (column.width) {
+		                numberOfAutoWidthField--;
+		                flexColumnWidth = flexColumnWidth - column.width;
+		              }
+		            });
+		            if (numberOfAutoWidthField) {
+		              flexColumnWidth = flexColumnWidth / numberOfAutoWidthField;
+		              if (flexColumnWidth < columnMinWidth) {
+		                flexColumnWidth = columnMinWidth;
+		              }
+		            }
+		            data = _extends({}, data, {
+		              maxRowWidth: maxRowWidth,
+		              flexColumnWidth: flexColumnWidth,
+		              hasRightScrollbar: hasRightScrollbar
+		            });
+		            store.emit('change');
+		          })();
 		        }
+		        break;
 		      }
-		      _this.setState({
-		        maxRowWidth: maxRowWidth,
-		        flexColumnWidth: flexColumnWidth,
-		        hasRightScrollbar: hasRightScrollbar
-		      });
-		    })();
+		    case _action2.default.SET_MIN_ROW_WIDTH:
+		      {
+		        data = _extends({}, data, action.data);
+		        store.emit('change');
+		        break;
+		      }
+		    default:
 		  }
-		}
+		});
 
-		function updateMinRowWidth() {
-		  var _props2 = this.props;
-		  var onSelectionChange = _props2.onSelectionChange;
-		  var selectedBy = _props2.selectedBy;
-		  var columns = _props2.columns;
-		  var columnMinWidth = _props2.columnMinWidth;
-
-		  var minRowWidth = -2;
-		  if (onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
-		    minRowWidth += 40;
-		  }
-		  columns.forEach(function (column) {
-		    minRowWidth += column.width || columnMinWidth;
-		  });
-		  this.setState({
-		    minRowWidth: minRowWidth
-		  });
-		}
+		exports.default = store;
 
 	/***/ },
 	/* 18 */

@@ -1,3 +1,4 @@
 ﻿import {Dispatcher} from 'flux';
 
-export default new Dispatcher();
+const dispatcher = new Dispatcher();
+export default dispatcher;
