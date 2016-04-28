@@ -24,7 +24,6 @@ class Tbody extends Component {
     minRowWidth: PropTypes.number,
     rowHeight: PropTypes.number,
     hasRightScrollbar: PropTypes.bool,
-    setHeaderScroll: PropTypes.func,
     // main data
     columns: PropTypes.array.isRequired,
     items: PropTypes.array.isRequired,

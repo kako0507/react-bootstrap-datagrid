@@ -20293,19 +20293,10 @@
 		  function Table(props) {
 		    _classCallCheck(this, Table);
 
-		    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Table).call(this, props));
-
-		    _this._setHeaderScroll = _this._setHeaderScroll.bind(_this);
-		    return _this;
+		    return _possibleConstructorReturn(this, Object.getPrototypeOf(Table).call(this, props));
 		  }
 
 		  _createClass(Table, [{
-		    key: '_setHeaderScroll',
-		    value: function _setHeaderScroll(ev) {
-		      var thead = _reactDom2.default.findDOMNode(this.refs.thead);
-		      thead.scrollLeft = ev.target.scrollLeft;
-		    }
-		  }, {
 		    key: 'render',
 		    value: function render() {
 		      var _props = this.props;
@@ -20386,7 +20377,6 @@
 		          rowHeight: rowHeight,
 		          hasRightScrollbar: hasRightScrollbar,
 		          itemPadding: itemPadding,
-		          setHeaderScroll: this._setHeaderScroll,
 		          columns: columns,
 		          items: items,
 		          selectedItems: selectedItems,
@@ -43188,12 +43178,13 @@
 		    value: function _handleDrag(ev, mouseDownColumnConfig) {
 		      var _this3 = this;
 
+		      var tableId = this.props.tableId;
 		      var data = this.state.data;
 
 		      var dragStartIndex = data.get('dragStartIndex');
 		      var oldDragEndIndex = data.get('dragEndIndex');
-		      var dom = _reactDom2.default.findDOMNode(this);
-		      var dragLeft = ev.pageX - dom.getBoundingClientRect().left + dom.scrollLeft;
+		      var thead = document.querySelector('#thead-' + tableId);
+		      var dragLeft = ev.pageX - thead.getBoundingClientRect().left + thead.scrollLeft;
 		      var dragDistance = dragLeft - data.get('dragStartLeft');
 		      var dragDistanceVertical = ev.pageY - data.get('dragStartTop');
 		      var isDragging = data.get('isDragging') || Math.abs(dragDistance) > 10 || Math.abs(dragDistanceVertical) > 10;
@@ -43267,7 +43258,19 @@
 		          if (!mouseDownColumnConfig) {
 		            clearTimeout(_this3.dragTimeout);
 		            _this3.dragTimeout = setTimeout(_this3._handleDrag.bind(_this3, ev), 100);
-		            _this3.props.onDrag(ev);
+		            var tbody = document.querySelector('#tbody-' + tableId);
+		            var _dragLeft = ev.pageX - thead.getBoundingClientRect().left;
+		            if (_dragLeft < 30) {
+		              thead.scrollLeft -= 30;
+		              if (tbody) {
+		                tbody.scrollLeft = thead.scrollLeft;
+		              }
+		            } else if (_dragLeft > thead.offsetWidth - 30) {
+		              thead.scrollLeft += 30;
+		              if (tbody) {
+		                tbody.scrollLeft = thead.scrollLeft;
+		              }
+		            }
 		          }
 		        })();
 		      } else if (mouseDownColumnConfig && !isDragging) {
@@ -44368,10 +44371,10 @@
 		    key: '_handleScroll',
 		    value: function _handleScroll(ev) {
 		      var _props = this.props;
+		      var tableId = _props.tableId;
 		      var height = _props.height;
 		      var rowHeight = _props.rowHeight;
 		      var itemPadding = _props.itemPadding;
-		      var setHeaderScroll = _props.setHeaderScroll;
 		      var itemsToRender = this.state.itemsToRender;
 		      var _ev$target = ev.target;
 		      var scrollTop = _ev$target.scrollTop;
@@ -44382,7 +44385,8 @@
 		        this._updateRowsLazyRender(this.props);
 		      }
 		      if (scrollLeft !== this.scrollLeft) {
-		        setHeaderScroll(ev);
+		        var thead = document.querySelector('#thead-' + tableId);
+		        thead.scrollLeft = ev.target.scrollLeft;
 		      }
 		      this.scrollLeft = scrollLeft;
 		    }
@@ -44681,7 +44685,6 @@
 		  minRowWidth: _react.PropTypes.number,
 		  rowHeight: _react.PropTypes.number,
 		  hasRightScrollbar: _react.PropTypes.bool,
-		  setHeaderScroll: _react.PropTypes.func,
 		  // main data
 		  columns: _react.PropTypes.array.isRequired,
 		  items: _react.PropTypes.array.isRequired,

@@ -61,11 +61,6 @@ class Table extends Component {
   };
   constructor(props) {
     super(props);
-    this._setHeaderScroll = ::this._setHeaderScroll;
-  }
-  _setHeaderScroll(ev) {
-    const thead = ReactDOM.findDOMNode(this.refs.thead);
-    thead.scrollLeft = ev.target.scrollLeft;
   }
   render() {
     const {
@@ -148,7 +143,6 @@ class Table extends Component {
           rowHeight={rowHeight}
           hasRightScrollbar={hasRightScrollbar}
           itemPadding={itemPadding}
-          setHeaderScroll={this._setHeaderScroll}
           columns={columns}
           items={items}
           selectedItems={selectedItems}

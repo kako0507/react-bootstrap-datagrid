@@ -29,10 +29,10 @@ class TbodyContainer extends Component {
   }
   _handleScroll(ev) {
     const {
+      tableId,
       height,
       rowHeight,
       itemPadding,
-      setHeaderScroll
     } = this.props;
     let {itemsToRender} = this.state;
     const {scrollTop, scrollLeft} = ev.target;
@@ -41,7 +41,8 @@ class TbodyContainer extends Component {
       this._updateRowsLazyRender(this.props);
     }
     if(scrollLeft !== this.scrollLeft) {
-      setHeaderScroll(ev);
+      const thead = document.querySelector(`#thead-${tableId}`);
+      thead.scrollLeft = ev.target.scrollLeft;
     }
     this.scrollLeft = scrollLeft;
   }

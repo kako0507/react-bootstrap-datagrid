@@ -122,14 +122,15 @@ class TheadContainer extends Component {
     }));
   }
   _handleDrag(ev, mouseDownColumnConfig) {
+    const {tableId} = this.props;
     const {data} = this.state;
     const dragStartIndex = data.get('dragStartIndex');
     const oldDragEndIndex = data.get('dragEndIndex');
-    const dom =  ReactDOM.findDOMNode(this);
+    const thead =  document.querySelector(`#thead-${tableId}`);
     const dragLeft = (
       ev.pageX
-      - dom.getBoundingClientRect().left
-      + dom.scrollLeft
+      - thead.getBoundingClientRect().left
+      + thead.scrollLeft
     );
     const dragDistance = dragLeft - data.get('dragStartLeft');
     const dragDistanceVertical = ev.pageY - data.get('dragStartTop');
@@ -206,8 +207,21 @@ class TheadContainer extends Component {
         this.dragTimeout = setTimeout(
           this._handleDrag.bind(this, ev),
           100
-        );
-        this.props.onDrag(ev);
+	);
+	const tbody = document.querySelector(`#tbody-${tableId}`);
+	const dragLeft = ev.pageX - thead.getBoundingClientRect().left;
+	if(dragLeft < 30) {
+	  thead.scrollLeft -= 30;
+	  if(tbody) {
+	    tbody.scrollLeft = thead.scrollLeft;
+	  }
+	}
+	else if(dragLeft > thead.offsetWidth - 30) {
+	  thead.scrollLeft += 30;
+	  if(tbody) {
+	    tbody.scrollLeft = thead.scrollLeft;
+	  }
+	}
       }
     }
     else if(mouseDownColumnConfig && !isDragging) {
