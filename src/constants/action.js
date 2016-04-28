@@ -1,8 +1,10 @@
 import _ from 'lodash';
 
 const action = [
+  'CREATE_TABLE',
   'SET_ROW_WIDTH',
   'SET_MIN_ROW_WIDTH',
+  'SET_TEMP_COLUMNS'
 ];
 
 export default _(action)

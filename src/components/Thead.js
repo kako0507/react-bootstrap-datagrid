@@ -7,6 +7,7 @@ import styles from './Thead.scss';
 
 class Thead extends Component {
   static propTypes = {
+    tableId: PropTypes.string,
     // layout
     tableStyles: PropTypes.arrayOf(
       PropTypes.oneOf([
@@ -50,6 +51,7 @@ class Thead extends Component {
   };
   render() {
     const {
+      tableId,
       tableStyles,
       rowWidth,
       minRowWidth,
@@ -81,6 +83,7 @@ class Thead extends Component {
     } =  this.props;
     return (
       <div
+	id={`thead-${tableId}`}
         className={classNames(
           styles['thead'],
           tableStyles.map(style => styles[`thead-${style}`])
@@ -126,7 +129,8 @@ class Thead extends Component {
                       : undefined
               );
             return (
-              <Th
+	      <Th
+	        tableId={tableId}
                 width={columnConfig.width || flexColumnWidth}
                 columnMinWidth={columnMinWidth}
                 rowHeight={rowHeight}

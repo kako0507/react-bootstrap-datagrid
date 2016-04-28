@@ -1,19 +1,27 @@
+import {Map, List} from 'immutable';
 import dispatcher from '../dispatcher';
 import actionConstants from '../constants/action';
-import * as actions from '../actions/app';
 import {EventEmitter} from 'events';
 
-let data = {
-  minRowWidth: 100,
-  maxRowWidth: 100,
-  flexColumnWidth: 100,
-  hasRightScrollbar: false
-};
+let data = Map();
 
 const store = new EventEmitter();
-store.getAll  = () => data;
+store.getAll = tableId => data.get(tableId);
 store.dispatchToken = dispatcher.register(action => {
   switch(action.type) {
+    case actionConstants.CREATE_TABLE: {
+      data = data.mergeIn(
+        action.tableId,
+        {
+	  minRowWidth: 100,
+	  maxRowWidth: 100,
+	  flexColumnWidth: 100,
+	  hasRightScrollbar: false
+        }
+      )
+      store.emit('change');
+      break;
+    }
     case actionConstants.SET_ROW_WIDTH: {
       const {
         currentTableWidth,
@@ -24,16 +32,17 @@ store.dispatchToken = dispatcher.register(action => {
         columns,
         columnMinWidth
       } = action.data;
+      const minRowWidth = data.get('minRowWidth');
       let maxRowWidth;
-      if(currentTableWidth < data.minRowWidth) {
-        maxRowWidth = data.minRowWidth;
+      if(currentTableWidth < minRowWidth) {
+        maxRowWidth = minRowWidth;
       }
       else {
         maxRowWidth = currentTableWidth;
       }
       if(
-        (maxRowWidth && data.maxRowWidth !== maxRowWidth)
-     || hasRightScrollbar !== data.hasRightScrollbar
+        (maxRowWidth && data.get('maxRowWidth') !== maxRowWidth)
+     || hasRightScrollbar !== data.get('hasRightScrollbar')
       ) {
         let flexColumnWidth = maxRowWidth;
         // sub width of scrollbar
@@ -56,21 +65,23 @@ store.dispatchToken = dispatcher.register(action => {
             flexColumnWidth = columnMinWidth;
           }
         }
-        data = {
-          ...data,
-          maxRowWidth,
-          flexColumnWidth,
-          hasRightScrollbar
-        };
+        data = data.mergeIn(
+	  [action.tableId],
+	  {
+	    maxRowWidth,
+	    flexColumnWidth,
+	    hasRightScrollbar
+          }
+        );
         store.emit('change');
       }
       break;
     }
     case actionConstants.SET_MIN_ROW_WIDTH: {
-      data = {
-        ...data,
-        ...action.data
-      };
+      data = data.mergeIn(
+        [action.tableId],
+        action.data
+      );
       store.emit('change');
       break;
     }

@@ -1,12 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import * as actions from '../actions/table';
 import Tr from './Tr';
 import styles from './Tbody.scss';
 import 'javascript-detect-element-resize';
 
 class Tbody extends Component {
   static propTypes = {
+    tableId: PropTypes.string,
     // layout
     tableStyles: PropTypes.arrayOf(
       PropTypes.oneOf([
@@ -20,7 +22,6 @@ class Tbody extends Component {
     flexColumnWidth: PropTypes.number,
     maxRowWidth: PropTypes.number,
     minRowWidth: PropTypes.number,
-    updateRowWidth: PropTypes.func,
     rowHeight: PropTypes.number,
     hasRightScrollbar: PropTypes.bool,
     setHeaderScroll: PropTypes.func,
@@ -57,17 +58,28 @@ class Tbody extends Component {
     removeResizeListener(dom.parentNode.parentNode, this._updateRowWidth);
   }
   componentDidUpdate() {
-    this._updateRowWidth();
+    //this._updateRowWidth();
   }
   _updateRowWidth() {
     const {
       height,
-      updateRowWidth,
     } = this.props;
-    const tableBodyItems = ReactDOM.findDOMNode(this.refs.tableBodyItems);
-    updateRowWidth(
-      tableBodyItems.offsetHeight > height
+    const currentTableWidth = document.querySelector(`#table-${this.props.tableId}`).offsetWidth;
+    const thead = document.querySelector(`#thead-${this.props.tableId}`);
+    const tbody = ReactDOM.findDOMNode(this);
+    const tbodyItems = ReactDOM.findDOMNode(this.refs.tbodyItems);
+    const hasRightScrollbar = tbodyItems.offsetHeight > height;
+    actions.updateRowWidth(
+      this.props.tableId,
+      {
+	...this.props,
+	currentTableWidth,
+	hasRightScrollbar
+      }
     );
+    if(tbody) {
+      tbody.scrollLeft = thead.scrollLeft;
+    }
   }
   _getItemsToRender() {
     const {
@@ -101,6 +113,7 @@ class Tbody extends Component {
   }
   render() {
     const {
+      tableId,
       tableStyles,
       height,
       maxRowWidth,
@@ -124,6 +137,7 @@ class Tbody extends Component {
     } = this._getItemsToRender();
     return (
       <div
+	id={`tbody-${tableId}`}
         className={classNames(
           styles['tbody'],
           tableStyles.map(style => styles[`tbody-${style}`]),
@@ -162,7 +176,7 @@ class Tbody extends Component {
               key="top"
             />
           }
-          <div ref="tableBodyItems">
+          <div ref="tbodyItems">
             {arrItemsToRender.map((rowItem, index) => (
               <Tr
                 {...this.props}

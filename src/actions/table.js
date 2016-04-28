@@ -3,19 +3,30 @@ import actionConstants from '../constants/action';
 
 const dispatch = dispatcher.dispatch.bind(dispatcher);
 
-export function updateRowWidth(data) {
+export function createTable(tableId) {
+  dispatch({
+    type: actionConstants.CREATE_TABLE,
+    tableId
+  });
+}
+
+export function updateRowWidth(tableId, data) {
   dispatch({
     type: actionConstants.SET_ROW_WIDTH,
+    tableId,
     data
   });
 }
 
-export function updateMinRowWidth({
-  onSelectionChange,
-  selectedBy,
-  columns,
-  columnMinWidth
-}) {
+export function updateMinRowWidth(
+  tableId,
+  {
+    onSelectionChange,
+    selectedBy,
+    columns,
+    columnMinWidth
+  }
+) {
   let minRowWidth = -2;
   if(onSelectionChange && selectedBy.indexOf('checkbox') > -1) {
     minRowWidth += 40;
@@ -25,6 +36,7 @@ export function updateMinRowWidth({
   });
   dispatch({
     type: actionConstants.SET_MIN_ROW_WIDTH,
+    tableId,
     data: {
       minRowWidth
     }

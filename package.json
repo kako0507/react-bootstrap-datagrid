@@ -22,7 +22,8 @@
     "immutable": "^3.7.6",
     "javascript-detect-element-resize": "^0.5.3",
     "lodash": "^4.0.1",
-    "react-icons": "^1.0.3"
+    "react-icons": "^1.0.3",
+    "shortid": "^2.2.6"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",

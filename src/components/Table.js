@@ -2,16 +2,18 @@ import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import classNames from 'classnames';
+import shortid from 'shortid';
 import FaSpinner from 'react-icons/lib/fa/spinner';
 import {scrollbarWidth} from '../constants';
-import * as actions from '../actions/app';
-import appStore from '../stores/app';
+import * as actions from '../actions/table';
+import tableStore from '../stores/table';
 import Thead from './TheadContainer';
 import Tbody from './TbodyContainer';
 import styles from './Table.scss';
 
 class Table extends Component {
   static propTypes = {
+    tableId: PropTypes.string,
     // layout
     className: PropTypes.string,
     tableStyles: PropTypes.arrayOf(
@@ -31,7 +33,6 @@ class Table extends Component {
     hasRightScrollbar: PropTypes.bool,
     rowHeight: PropTypes.number,
     itemPadding: PropTypes.number,
-    updateRowWidth: PropTypes.func,
     // main data
     columns: PropTypes.array.isRequired,
     items: PropTypes.array.isRequired,
@@ -60,46 +61,15 @@ class Table extends Component {
   };
   constructor(props) {
     super(props);
-    this._handleDrag = ::this._handleDrag;
     this._setHeaderScroll = ::this._setHeaderScroll;
-    this._updateRowWidth = ::this._updateRowWidth;
-  }
-  _handleDrag(ev) {
-    const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
-    const dragLeft = ev.pageX - tableHeader.getBoundingClientRect().left;
-    if(dragLeft < 30) {
-      tableHeader.scrollLeft -= 30;
-      const tbody = ReactDOM.findDOMNode(this.refs.tableBody);
-      if(tbody) {
-        tbody.scrollLeft = tableHeader.scrollLeft;
-      }
-    }
-    else if(dragLeft > tableHeader.offsetWidth - 30) {
-      tableHeader.scrollLeft += 30;
-      const tbody = ReactDOM.findDOMNode(this.refs.tableBody);
-      if(tbody) {
-        tbody.scrollLeft = tableHeader.scrollLeft;
-      }
-    }
   }
   _setHeaderScroll(ev) {
-    const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
-    tableHeader.scrollLeft = ev.target.scrollLeft;
-  }
-  _updateRowWidth(hasRightScrollbar) {
-    const tableHeader = ReactDOM.findDOMNode(this.refs.tableHeader);
-    const currentTableWidth = ReactDOM.findDOMNode(this).offsetWidth;
-    this.props.updateRowWidth(
-      currentTableWidth,
-      hasRightScrollbar
-    );
-    const tbody = ReactDOM.findDOMNode(this.refs.tableBody);
-    if(tbody) {
-      tbody.scrollLeft = tableHeader.scrollLeft;
-    }
+    const thead = ReactDOM.findDOMNode(this.refs.thead);
+    thead.scrollLeft = ev.target.scrollLeft;
   }
   render() {
     const {
+      tableId,
       tableStyles,
       className,
       columnMinWidth,
@@ -107,7 +77,6 @@ class Table extends Component {
       hasRightScrollbar,
       maxRowWidth,
       minRowWidth,
-      updateRowWidth,
       headerHeight,
       rowHeight,
       itemPadding,
@@ -136,6 +105,7 @@ class Table extends Component {
     }
     return (
       <div
+        id={`table-${tableId}`}
         className={classNames(
           styles['table'],
           tableStyles.map(style => styles[`table-${style}`]),
@@ -143,7 +113,8 @@ class Table extends Component {
         )}
       >
         <Thead
-          ref="tableHeader"
+          ref="thead"
+	  tableId={tableId}
           tableStyles={tableStyles}
           columnMinWidth={columnMinWidth}
           flexColumnWidth={flexColumnWidth}
@@ -158,7 +129,6 @@ class Table extends Component {
           sortDirections={sortDirections}
           multiSort={multiSort}
           onSortChange={onSortChange}
-          onDrag={this._handleDrag}
           onColumnOrderChange={onColumnOrderChange}
           selectedItems={selectedItems}
           selectedBy={selectedBy}
@@ -168,13 +138,13 @@ class Table extends Component {
         />
         <Tbody
           ref="tableBody"
+	  tableId={tableId}
           tableStyles={tableStyles}
           height={height}
           columnMinWidth={columnMinWidth}
           flexColumnWidth={flexColumnWidth}
           maxRowWidth={maxRowWidth}
           minRowWidth={minRowWidth}
-          updateRowWidth={this._updateRowWidth}
           rowHeight={rowHeight}
           hasRightScrollbar={hasRightScrollbar}
           itemPadding={itemPadding}
@@ -214,38 +184,39 @@ class TableContainer extends Component {
   constructor(props) {
     super(props);
     this._updateState = ::this._updateState;
-    this._updateRowWidth = ::this._updateRowWidth;
     this._updateMinRowWidth = ::this._updateMinRowWidth;
   }
+  componentWillMount() {
+    this.tableId = shortid.generate();
+    actions.createTable(this.tableId);
+  }
   componentDidMount() {
-    appStore.addListener('change', this._updateState);
+    tableStore.addListener('change', this._updateState);
     this._updateMinRowWidth();
   }
   componentWillUmount() {
-    appStore.removeListener('change', this._updateState);
+    tableStore.removeListener('change', this._updateState);
   }
   componentWillReceiveProps() {
     this._updateMinRowWidth();
   }
   _updateState() {
-    this.setState(appStore.getAll());
-  }
-  _updateRowWidth(currentTableWidth, hasRightScrollbar) {
-    actions.updateRowWidth({
-      ...this.props,
-      currentTableWidth,
-      hasRightScrollbar
+    this.setState({
+      table: tableStore.getAll(this.tableId)
     });
   }
   _updateMinRowWidth() {
-    actions.updateMinRowWidth(this.props);
+    actions.updateMinRowWidth(this.tableId, this.props);
   }
   render() {
+    if(!this.state.table) {
+      return null;
+    }
     return (
       <Table
+        tableId={this.tableId}
         {...this.props}
-        {...this.state}
-        updateRowWidth={this._updateRowWidth}
+        {...this.state.table.toJS()}
       />
     );
   }
