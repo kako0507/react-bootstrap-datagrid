@@ -191,21 +191,21 @@ class TheadContainer extends Component {
         this.dragTimeout = setTimeout(
           this._handleDrag.bind(this, ev),
           100
-	);
-	const tbody = document.querySelector(`#tbody-${tableId}`);
-	const dragLeft = ev.pageX - thead.getBoundingClientRect().left;
-	if(dragLeft < 30) {
-	  thead.scrollLeft -= 30;
-	  if(tbody) {
-	    tbody.scrollLeft = thead.scrollLeft;
-	  }
-	}
-	else if(dragLeft > thead.offsetWidth - 30) {
-	  thead.scrollLeft += 30;
-	  if(tbody) {
-	    tbody.scrollLeft = thead.scrollLeft;
-	  }
-	}
+        );
+        const tbody = document.querySelector(`#tbody-${tableId}`);
+        const dragLeft = ev.pageX - thead.getBoundingClientRect().left;
+        if(dragLeft < 30) {
+          thead.scrollLeft -= 30;
+          if(tbody) {
+            tbody.scrollLeft = thead.scrollLeft;
+          }
+        }
+        else if(dragLeft > thead.offsetWidth - 30) {
+          thead.scrollLeft += 30;
+          if(tbody) {
+            tbody.scrollLeft = thead.scrollLeft;
+          }
+        }
       }
     }
     else if(mouseDownColumnConfig && !isDragging) {
@@ -228,8 +228,8 @@ class TheadContainer extends Component {
         onSortChange={onSortChange && this._handleSortChange}
         tempColumns={thead.get('tempColumns')}
         dragStartIndex={thead.get('dragStartIndex')}
-	isDragging={thead.get('isDragging')}
-	actions={actions}
+        isDragging={thead.get('isDragging')}
+        actions={actions}
       />
     );
   }

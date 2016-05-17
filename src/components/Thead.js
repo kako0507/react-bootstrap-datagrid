@@ -78,7 +78,7 @@ class Thead extends Component {
     } =  this.props;
     return (
       <div
-	id={`thead-${tableId}`}
+        id={`thead-${tableId}`}
         className={classNames(
           styles['thead'],
           tableStyles.map(style => styles[`thead-${style}`])
@@ -101,8 +101,8 @@ class Thead extends Component {
               idProperty={idProperty}
             />
           }
-	  {tempColumns && tempColumns.map((columnConfig, index) => {
-	    const columnName = columnConfig.get('name');
+          {tempColumns && tempColumns.map((columnConfig, index) => {
+            const columnName = columnConfig.get('name');
             let sortable;
             if(onSortChange) {
               if(!sortFields) {
@@ -125,8 +125,8 @@ class Thead extends Component {
                       : undefined
               );
             return (
-	      <Th
-	        tableId={tableId}
+              <Th
+                tableId={tableId}
                 width={columnConfig.get('width') || flexColumnWidth}
                 columnMinWidth={columnMinWidth}
                 rowHeight={rowHeight}
@@ -139,8 +139,8 @@ class Thead extends Component {
                && columns[dragStartIndex]
                && columns[dragStartIndex].name === columnName
                 }
-		onColumnOrderChange={onColumnOrderChange}
-		actions={actions}
+                onColumnOrderChange={onColumnOrderChange}
+                actions={actions}
                 key={columnName}
               />
             );

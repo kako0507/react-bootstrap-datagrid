@@ -13,7 +13,7 @@ export function setTempColumns(tableId, tempColumns) {
   });
 }
 
-export function setDragInfo(tableId, data) {
+export function setDragInfo(tableId, status, data) {
   dispatch({
     type: actionConstants.SET_DRAG_INFO,
     tableId,

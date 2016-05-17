@@ -12,7 +12,7 @@ class Th extends Component {
     rowHeight: PropTypes.number,
     // column configuration
     /*columnConfig: React.PropTypes.shape({
-	  name: React.PropTypes.string.isRequired
+          name: React.PropTypes.string.isRequired
     }),*/
     // sorting
     sort: PropTypes.object,
@@ -33,18 +33,21 @@ class Th extends Component {
     this._handleMouseMove = ::this._handleMouseMove;
     this._handleMouseUp = ::this._handleMouseUp;
   }
-  componentDidMount() {
-    const dom = ReactDOM.findDOMNode(this);
-    dom.addEventListener('mousedown', this._handleMouseDown);
-  }
-  compoenentWillUnmount() {
-    const dom = ReactDOM.findDOMNode(this);
-    dom.removeEventListener('mousedown', this._handleMouseDown);
-  }
   _handleMouseMove(ev) {
     stopEventPropagation(ev);
     document.body.style.cursor = 'move';
-    //this.props.onDrag(ev);
+    const {tableId, actions} = this.props;
+    const thead =  document.querySelector(`#thead-${tableId}`);
+    const mouseLeft = ev.pageX - thead.getBoundingClientRect().scrollLeft;
+    const dragLeft = mouseLeft + thead.scrollLeft;
+    actions.setDragInfo(
+      tableId,
+      'DRAGGING',
+      {
+        mouseLeft,
+        dragLeft
+      }
+    );
   }
   _handleMouseDown(ev) {
     if(ev.which == 1) {
@@ -53,15 +56,16 @@ class Th extends Component {
       const {tableId, actions} = this.props;
       const thead =  document.querySelector(`#thead-${tableId}`);
       actions.setDragInfo(
-	tableId,
-	{
-	  dragStartIndex: this.props.index,
-	  dragStartLeft: (
-	    ev.pageX
-	  - thead.getBoundingClientRect().left
-	  + thead.scrollLeft
-	  )
-	}
+        tableId,
+        'START',
+        {
+          dragStartIndex: this.props.index,
+          dragStartLeft: (
+            ev.pageX
+          - thead.getBoundingClientRect().left
+          + thead.scrollLeft
+          )
+        }
       );
       if(this.props.onColumnOrderChange) {
         window.addEventListener('mousemove', this._handleMouseMove);
@@ -129,6 +133,7 @@ class Th extends Component {
           width: !width || (columnMinWidth > width) ? columnMinWidth : width,
           height: rowHeight
         }}
+        onMouseDown={this._handleMouseDown}
       >
         <div
           className={classNames(
