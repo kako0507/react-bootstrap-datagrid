@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/kako0507/react-bootstrap-datagrid",
   "dependencies": {
+    "async": "^2.0.0-rc.3",
     "babel-runtime": "^6.3.19",
     "classnames": "^2.2.3",
     "flux": "^2.1.1",

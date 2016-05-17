@@ -1,7 +1,7 @@
-import dispatcher from '../dispatcher';
+import {dispatch} from '../dispatcher';
 import actionConstants from '../constants/action';
 
-const dispatch = dispatcher.dispatch.bind(dispatcher);
+//const dispatch = dispatcher.dispatch.bind(dispatcher);
 
 export function createTable(tableId) {
   dispatch({

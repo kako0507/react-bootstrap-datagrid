@@ -61,7 +61,7 @@ class Tbody extends Component {
   }
   _updateRowWidth() {
     const {
-      height,
+      height
     } = this.props;
     const currentTableWidth = document.querySelector(`#table-${this.props.tableId}`).offsetWidth;
     const thead = document.querySelector(`#thead-${this.props.tableId}`);

@@ -11,9 +11,9 @@ class Th extends Component {
     columnMinWidth: PropTypes.number,
     rowHeight: PropTypes.number,
     // column configuration
-    columnConfig: React.PropTypes.shape({
-      name: React.PropTypes.string.isRequired
-    }),
+    /*columnConfig: React.PropTypes.shape({
+	  name: React.PropTypes.string.isRequired
+    }),*/
     // sorting
     sort: PropTypes.object,
     sortable: PropTypes.bool,
@@ -35,36 +35,49 @@ class Th extends Component {
   }
   componentDidMount() {
     const dom = ReactDOM.findDOMNode(this);
-    dom.addEventListener("mousedown", this._handleMouseDown);
+    dom.addEventListener('mousedown', this._handleMouseDown);
   }
   compoenentWillUnmount() {
     const dom = ReactDOM.findDOMNode(this);
-    dom.removeEventListener("mousedown", this._handleMouseDown);
+    dom.removeEventListener('mousedown', this._handleMouseDown);
   }
   _handleMouseMove(ev) {
     stopEventPropagation(ev);
     document.body.style.cursor = 'move';
-    this.props.onDrag(ev);
+    //this.props.onDrag(ev);
   }
   _handleMouseDown(ev) {
     if(ev.which == 1) {
       stopEventPropagation(ev);
-      this.props.onDragStart(ev, this.props.index);
+      //this.props.onDragStart(ev, this.props.index);
+      const {tableId, actions} = this.props;
+      const thead =  document.querySelector(`#thead-${tableId}`);
+      actions.setDragInfo(
+	tableId,
+	{
+	  dragStartIndex: this.props.index,
+	  dragStartLeft: (
+	    ev.pageX
+	  - thead.getBoundingClientRect().left
+	  + thead.scrollLeft
+	  )
+	}
+      );
       if(this.props.onColumnOrderChange) {
-        window.addEventListener("mousemove", this._handleMouseMove);
+        window.addEventListener('mousemove', this._handleMouseMove);
       }
-      window.addEventListener("mouseup", this._handleMouseUp);
+      window.addEventListener('mouseup', this._handleMouseUp);
     }
   }
   _handleMouseUp(ev) {
     if(ev.which == 1) {
       stopEventPropagation(ev);
-      this.props.onDragEnd(ev, this.props.columnConfig);
+      //this.props.onDragEnd(ev, this.props.columnConfig);
       if(this.props.onColumnOrderChange) {
         document.body.style.cursor = 'auto';
-        window.removeEventListener("mousemove", this._handleMouseMove);
+        window.removeEventListener('mousemove', this._handleMouseMove);
       }
-      window.removeEventListener("mouseup", this._handleMouseUp);
+      window.removeEventListener('mouseup', this._handleMouseUp);
     }
   }
   render() {
@@ -79,7 +92,8 @@ class Th extends Component {
       onColumnOrderChange,
       isDragging
     } = this.props;
-    if(typeof columnConfig.title !== 'string') {
+    const columnTitle = columnConfig.get('title');
+    if(typeof columnTitle !== 'string') {
       return (
         <div
           className={classNames(
@@ -93,14 +107,14 @@ class Th extends Component {
             height: rowHeight
           }}
         >
-          {columnConfig.title}
+          {columnTitle}
         </div>
       );
     }
     return (
       <div
         title={rowHeight > 0
-          ? columnConfig.title
+          ? columnTitle
           : undefined
         }
         className={classNames(
@@ -130,7 +144,7 @@ class Th extends Component {
           }}
         >
           <span className="th-text">
-            {columnConfig.title}
+            {columnTitle}
           </span>
         </div>
       </div>

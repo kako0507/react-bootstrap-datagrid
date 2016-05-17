@@ -9,19 +9,6 @@ const store = new EventEmitter();
 store.getAll = tableId => data.get(tableId);
 store.dispatchToken = dispatcher.register(action => {
   switch(action.type) {
-    case actionConstants.CREATE_TABLE: {
-      data = data.mergeIn(
-        action.tableId,
-        {
-	  minRowWidth: 100,
-	  maxRowWidth: 100,
-	  flexColumnWidth: 100,
-	  hasRightScrollbar: false
-        }
-      )
-      store.emit('change');
-      break;
-    }
     case actionConstants.SET_ROW_WIDTH: {
       const {
         currentTableWidth,

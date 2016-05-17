@@ -59,9 +59,6 @@ class Table extends Component {
     emptyText: PropTypes.string,
     isLoading: PropTypes.bool
   };
-  constructor(props) {
-    super(props);
-  }
   render() {
     const {
       tableId,

@@ -1,7 +1,7 @@
-import dispatcher from '../dispatcher';
+import {dispatch} from '../dispatcher';
 import actionConstants from '../constants/action';
 
-const dispatch = dispatcher.dispatch.bind(dispatcher);
+//const dispatch = dispatcher.dispatch.bind(dispatcher);
 
 export function setTempColumns(tableId, tempColumns) {
   dispatch({
@@ -10,5 +10,13 @@ export function setTempColumns(tableId, tempColumns) {
     data: {
       tempColumns
     }
+  });
+}
+
+export function setDragInfo(tableId, data) {
+  dispatch({
+    type: actionConstants.SET_DRAG_INFO,
+    tableId,
+    data
   });
 }

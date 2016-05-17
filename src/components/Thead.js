@@ -39,14 +39,12 @@ class Thead extends Component {
     isDragging: PropTypes.bool,
     dragStartIndex: PropTypes.number,
     onColumnOrderChange: PropTypes.func,
-    onDragStart: PropTypes.func,
-    onDrag: PropTypes.func,
-    onDragEnd: PropTypes.func,
     // select items by checkbox
     selectedItems: PropTypes.array,
     selectedBy: PropTypes.arrayOf(PropTypes.string),
     onSelectionChange: PropTypes.func,
     disableSelection: PropTypes.func,
+    actions: PropTypes.object,
     idProperty: PropTypes.string.isRequired
   };
   render() {
@@ -75,11 +73,8 @@ class Thead extends Component {
       tempColumns,
       dragStartIndex,
       onColumnOrderChange,
-      onDragStart,
-      onDrag,
-      onDragEnd,
-      idProperty,
-      immutableData
+      actions,
+      idProperty
     } =  this.props;
     return (
       <div
@@ -106,7 +101,8 @@ class Thead extends Component {
               idProperty={idProperty}
             />
           }
-          {tempColumns.map((columnConfig, index) => {
+	  {tempColumns && tempColumns.map((columnConfig, index) => {
+	    const columnName = columnConfig.get('name');
             let sortable;
             if(onSortChange) {
               if(!sortFields) {
@@ -114,24 +110,24 @@ class Thead extends Component {
               }
               else if(sortFields.length) {
                 sortable = !!sortFields
-                  //.find(sortField => sortField === columnConfig.name);
-                  .filter(sortField => sortField === columnConfig.name).length;
+                  //.find(sortField => sortField === columnName);
+                  .filter(sortField => sortField === columnName).length;
               }
             }
             const sort = sortStatus &&
               (
                 Array.isArray(sortStatus)
                   ? sortStatus
-                      //.find(sortItem => sortItem.name === columnConfig.name);
-                      .filter(sortItem => sortItem.name === columnConfig.name)[0]
-                  : sortStatus.name === columnConfig.name
+                      //.find(sortItem => sortItem.name === columnName);
+                      .filter(sortItem => sortItem.name === columnName)[0]
+                  : sortStatus.name === columnName
                       ? sortStatus
                       : undefined
               );
             return (
 	      <Th
 	        tableId={tableId}
-                width={columnConfig.width || flexColumnWidth}
+                width={columnConfig.get('width') || flexColumnWidth}
                 columnMinWidth={columnMinWidth}
                 rowHeight={rowHeight}
                 columnConfig={columnConfig}
@@ -141,13 +137,11 @@ class Thead extends Component {
                 isDragging={
                   isDragging
                && columns[dragStartIndex]
-               && columns[dragStartIndex].name === columnConfig.name
+               && columns[dragStartIndex].name === columnName
                 }
-                onDragStart={onDragStart}
-                onDrag={onDrag}
-                onDragEnd={onDragEnd}
-                onColumnOrderChange={onColumnOrderChange}
-                key={columnConfig.name}
+		onColumnOrderChange={onColumnOrderChange}
+		actions={actions}
+                key={columnName}
               />
             );
           })}

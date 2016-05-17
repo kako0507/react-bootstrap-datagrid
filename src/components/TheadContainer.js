@@ -1,36 +1,32 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-import {Map, List} from 'immutable';
+import * as actions from '../actions/thead';
+import theadStore from '../stores/thead';
 import Thead from './Thead';
 
 class TheadContainer extends Component {
-  state = {
-    data: Map({
-      tempColumns: List()
-    })
-  };
+  state = {};
   constructor(props) {
     super(props);
+    this._updateState = ::this._updateState;
     this._handleSortChange = ::this._handleSortChange;
-    this._handleDragStart = ::this._handleDragStart;
-    this._handleDrag = ::this._handleDrag;
-    this._handleDragEnd = ::this._handleDragEnd;
   }
   componentDidMount() {
-    this.setState(({data}) => ({
-      data: data.update(
-        'tempColumns',
-        () => List.of(...this.props.columns)
-      )
-    }));
+    const {tableId, columns} = this.props;
+    actions.setTempColumns(tableId, columns);
+    theadStore.addListener('change', this._updateState);
+  }
+  componentWillUmount() {
+    theadStore.removeListener('change', this._updateState);
   }
   componentWillReceiveProps(nextProps) {
-    this.setState(({data}) => ({
-      data: data.update(
-        'tempColumns',
-        () => List.of(...nextProps.columns)
-      )
-    }));
+    const {tableId, columns} = nextProps;
+    actions.setTempColumns(tableId, columns);
+  }
+  _updateState() {
+    this.setState({
+      thead: theadStore.getAll(this.props.tableId)
+    });
   }
   _handleSortChange(name) {
     if(!this.props.onSortChange) {
@@ -109,19 +105,7 @@ class TheadContainer extends Component {
     }
     this.props.onSortChange(sortStatus);
   }
-  _handleDragStart(ev, dragStartIndex) {
-    const dom =  ReactDOM.findDOMNode(this);
-    this.setState(({data}) => ({
-      data: data
-        .update('dragStartIndex', () => dragStartIndex)
-        .update('dragStartLeft', () => (
-          ev.pageX
-        - dom.getBoundingClientRect().left
-        + dom.scrollLeft
-        ))
-    }));
-  }
-  _handleDrag(ev, mouseDownColumnConfig) {
+  _handleDrag(ev, mouseDownColumnConfig) {/*
     const {tableId} = this.props;
     const {data} = this.state;
     const dragStartIndex = data.get('dragStartIndex');
@@ -227,24 +211,25 @@ class TheadContainer extends Component {
     else if(mouseDownColumnConfig && !isDragging) {
       this._handleSortChange(mouseDownColumnConfig.name);
     }
-  }
-  _handleDragEnd(ev, mouseDownColumnConfig) {
+  */}
+  _handleDragEnd(ev, mouseDownColumnConfig) {/*
     this._handleDrag(ev, mouseDownColumnConfig);
     clearTimeout(this.dragTimeout);
-  }
+  */}
   render() {
-    const {onSortChange} = this.props;
-    const {data} = this.state;
+    const {tableId, onSortChange} = this.props;
+    const {thead} = this.state;
+    if(!thead) {
+      return <div id={`thead-${tableId}`}/>;
+    }
     return (
       <Thead
         {...this.props}
         onSortChange={onSortChange && this._handleSortChange}
-        tempColumns={data.get('tempColumns')}
-        dragStartIndex={data.get('dragStartIndex')}
-        isDragging={data.get('isDragging')}
-        onDragStart={this._handleDragStart}
-        onDrag={this._handleDrag}
-        onDragEnd={this._handleDragEnd}
+        tempColumns={thead.get('tempColumns')}
+        dragStartIndex={thead.get('dragStartIndex')}
+	isDragging={thead.get('isDragging')}
+	actions={actions}
       />
     );
   }
